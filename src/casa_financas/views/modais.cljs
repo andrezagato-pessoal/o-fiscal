@@ -1,6 +1,7 @@
 (ns casa-financas.views.modais
   (:require [re-frame.core :as rf]
             [reagent.core :as r]
+            [clojure.string]
             [casa-financas.utils :as u]
             [casa-financas.components.comum :as c]))
 
@@ -18,16 +19,16 @@
    [:div {:class "flex gap-2"}
     (for [p presets-divisao]
       ^{:key (:label p)}
-      [:button {:class    (str "flex-1 py-2 rounded-xl text-xs font-medium border-2 transition-colors "
+      [:button {:class    (str "flex-1 py-2 rounded-panel text-xs font-medium border-2 transition-colors "
                                (if (= (:divisao p) divisao)
-                                 "bg-blue-500 text-white border-blue-500"
-                                 "text-gray-500 border-gray-200"))
+                                 "bg-ink text-cream border-ink"
+                                 "text-ink-2 border-rule"))
                 :on-click #(on-change (:divisao p))}
        (:label p)])
-    [:button {:class    (str "flex-1 py-2 rounded-xl text-xs font-medium border-2 transition-colors "
+    [:button {:class    (str "flex-1 py-2 rounded-panel text-xs font-medium border-2 transition-colors "
                              (if (not (some #(= (:divisao %) divisao) presets-divisao))
-                               "bg-blue-500 text-white border-blue-500"
-                               "text-gray-500 border-gray-200"))
+                               "bg-ink text-cream border-ink"
+                               "text-ink-2 border-rule"))
               :on-click #(on-change divisao)}
      "Manual"]]
    ;; Campos sempre visíveis
@@ -49,11 +50,11 @@
                   :style     {:border-color cor}
                   :value     pct
                   :on-change #(on-change (assoc divisao k (int (.. % -target -value))))}]
-         [:span {:class "text-xs text-gray-400"} "%"]]))]
+         [:span {:class "text-xs text-ink-3"} "%"]]))]
    ;; Aviso soma
    (let [soma (u/soma-divisao divisao)]
      (when (not= soma 100)
-       [:p {:class "text-xs text-red-500 font-medium text-center"}
+       [:p {:class "text-xs text-bad font-medium text-center"}
         (str "⚠ Soma: " soma "% (precisa ser 100%)")]))
    ;; Preview
    [c/barra-divisao divisao]])
@@ -61,7 +62,7 @@
 ;; -- Seletor de data --
 (defn seletor-data [valor on-change]
   [:input {:type      "date"
-           :class     "w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+           :class     "w-full border border-rule rounded-panel px-3 py-2.5 text-sm focus:outline-none focus:border-ink bg-panel"
            :value     valor
            :on-change #(on-change (.. % -target -value))}])
 
@@ -79,13 +80,13 @@
          :on-click #(when (= (.-target %) (.-currentTarget %))
                       (rf/dispatch [:fechar-modal]))}
    [:div {:class "absolute bottom-24 right-4 flex flex-col gap-2 items-end"}
-    [:button {:class    "flex items-center gap-2 bg-white shadow-lg rounded-2xl px-4 py-3 text-sm font-semibold text-gray-700 active:bg-gray-50 border border-gray-100"
+    [:button {:class    "flex items-center gap-2 bg-panel shadow-lg rounded-panel px-4 py-3 text-sm font-semibold text-ink active:bg-panel-2 border border-rule-soft"
               :on-click #(rf/dispatch [:abrir-modal :nova-despesa {}])}
      [:span "💸"] "Nova Despesa"]
-    [:button {:class    "flex items-center gap-2 bg-white shadow-lg rounded-2xl px-4 py-3 text-sm font-semibold text-gray-700 active:bg-gray-50 border border-gray-100"
+    [:button {:class    "flex items-center gap-2 bg-panel shadow-lg rounded-panel px-4 py-3 text-sm font-semibold text-ink active:bg-panel-2 border border-rule-soft"
               :on-click #(rf/dispatch [:abrir-modal :nova-entrada {}])}
      [:span "💰"] "Nova Entrada"]
-    [:button {:class    "flex items-center gap-2 bg-white shadow-lg rounded-2xl px-4 py-3 text-sm font-semibold text-gray-700 active:bg-gray-50 border border-gray-100"
+    [:button {:class    "flex items-center gap-2 bg-panel shadow-lg rounded-panel px-4 py-3 text-sm font-semibold text-ink active:bg-panel-2 border border-rule-soft"
               :on-click #(rf/dispatch [:abrir-modal :novo-template {}])}
      [:span "📋"] "Novo Template"]]])
 
@@ -140,26 +141,26 @@
           ;; Descrição + Categoria
           [:div {:class "flex gap-2"}
            [:input {:type        "text"
-                    :class       "flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    :class       "flex-1 border border-rule rounded-panel px-3 py-2.5 text-sm focus:outline-none focus:border-ink"
                     :placeholder "Descrição (ex: Mercado, Aluguel...)"
                     :value       (:descricao @form)
                     :on-change   #(swap! form assoc :descricao (.. % -target -value))}]
            [:div {:class "relative flex-shrink-0"}
-            [:button {:class    "h-full px-3 border border-gray-200 rounded-xl text-sm transition-colors bg-white"
+            [:button {:class    "h-full px-3 border border-rule rounded-panel text-sm transition-colors bg-panel"
                       :on-click #(swap! aberto-cat? not)}
              (if cat-atual (:emoji cat-atual) "📂")]
             (when @aberto-cat?
-              [:div {:class "absolute right-0 top-12 bg-white rounded-2xl shadow-lg border border-gray-100 p-2 z-50 w-52"}
-               [:button {:class    "w-full text-left px-3 py-2 rounded-xl text-xs text-gray-500"
+              [:div {:class "absolute right-0 top-12 bg-panel rounded-panel shadow-lg border border-rule-soft p-2 z-50 w-52"}
+               [:button {:class    "w-full text-left px-3 py-2 rounded-panel text-xs text-ink-2"
                          :on-click #(do (swap! form assoc :categoria_id nil :categoria_nome nil)
                                         (reset! aberto-cat? false))}
                 "— Sem categoria"]
                (for [cat categorias]
                  ^{:key (:id cat)}
-                 [:button {:class    (str "w-full text-left px-3 py-2 rounded-xl text-xs "
+                 [:button {:class    (str "w-full text-left px-3 py-2 rounded-panel text-xs "
                                           (if (= (:id cat) (:categoria_id @form))
-                                            "bg-blue-50 text-blue-600 font-medium"
-                                            "text-gray-700"))
+                                            "bg-panel-2 text-ink font-medium"
+                                            "text-ink"))
                            :on-click #(do (swap! form assoc
                                                  :categoria_id (:id cat)
                                                  :categoria_nome (:nome cat))
@@ -169,16 +170,16 @@
           ;; Valor + Data
           [:div {:class "flex gap-2"}
            [:div {:class "flex-1"}
-            [:label {:class "text-xs font-medium text-gray-500 mb-1 block"} "Valor (R$)"]
+            [:label {:class "text-xs font-medium text-ink-2 mb-1 block"} "Valor (R$)"]
             [:input {:type        "number"
                      :inputMode   "decimal"
                      :pattern     "[0-9]*"
-                     :class       "w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                     :class       "w-full border border-rule rounded-panel px-3 py-2.5 text-sm focus:outline-none focus:border-ink"
                      :placeholder "0,00"
                      :value       (:valor @form)
                      :on-change   #(swap! form assoc :valor (.. % -target -value))}]]
            [:div {:class "flex-1"}
-            [:label {:class "text-xs font-medium text-gray-500 mb-1 block"} "Data"]
+            [:label {:class "text-xs font-medium text-ink-2 mb-1 block"} "Data"]
             [seletor-data (:data_input @form)
              (fn [v]
                (swap! form assoc
@@ -190,52 +191,52 @@
 
           ;; Forma pagamento
           [:div
-           [:label {:class "text-xs font-medium text-gray-500 mb-1.5 block"} "Forma de pagamento"]
+           [:label {:class "text-xs font-medium text-ink-2 mb-1.5 block"} "Forma de pagamento"]
            [:div {:class "flex gap-2"}
-            [:button {:class    (str "flex-1 py-2.5 rounded-xl text-sm font-medium border-2 transition-colors flex items-center justify-center gap-1.5 "
+            [:button {:class    (str "flex-1 py-2.5 rounded-panel text-sm font-medium border-2 transition-colors flex items-center justify-center gap-1.5 "
                                      (if (= (:forma_pagamento @form) "pix")
-                                       "bg-blue-500 text-white border-blue-500"
-                                       "text-gray-500 border-gray-200"))
+                                       "bg-ink text-cream border-ink"
+                                       "text-ink-2 border-rule"))
                       :on-click #(swap! form assoc :forma_pagamento "pix")}
              "💳 Pix/Débito"]
-            [:button {:class    (str "flex-1 py-2.5 rounded-xl text-sm font-medium border-2 transition-colors flex items-center justify-center gap-1.5 "
+            [:button {:class    (str "flex-1 py-2.5 rounded-panel text-sm font-medium border-2 transition-colors flex items-center justify-center gap-1.5 "
                                      (if (= (:forma_pagamento @form) "credito")
-                                       "bg-blue-500 text-white border-blue-500"
-                                       "text-gray-500 border-gray-200"))
+                                       "bg-ink text-cream border-ink"
+                                       "text-ink-2 border-rule"))
                       :on-click #(swap! form assoc :forma_pagamento "credito")}
              "💳 Crédito"]]]
 
           ;; Quem pagou + Pago na mesma linha
           [:div {:class "flex items-end justify-between"}
            [:div
-            [:label {:class "text-xs font-medium text-gray-500 mb-1.5 block"} "Quem pagou?"]
+            [:label {:class "text-xs font-medium text-ink-2 mb-1.5 block"} "Quem pagou?"]
             [seletor-pagadores (:pagadores @form)
              (fn [ps] (swap! form assoc :pagadores ps))]]
            [:div {:class "flex flex-col items-center gap-1"}
-            [:label {:class "text-xs font-medium text-gray-500"} "Pago"]
-            [:button {:class    (str "w-10 h-10 rounded-xl border-2 flex items-center justify-center transition-colors "
+            [:label {:class "text-xs font-medium text-ink-2"} "Pago"]
+            [:button {:class    (str "w-10 h-10 rounded-panel border-2 flex items-center justify-center transition-colors "
                                      (if (:pago @form)
-                                       "bg-green-400 border-green-400 text-white"
-                                       "border-gray-200 text-gray-300"))
+                                       "bg-ok border-ok text-white"
+                                       "border-rule text-ink-3"))
                       :on-click #(swap! form update :pago not)}
              "✓"]]]
 
           ;; Divisão
           [:div
-           [:label {:class "text-xs font-medium text-gray-500 mb-1.5 block"} "Divisão (%)"]
+           [:label {:class "text-xs font-medium text-ink-2 mb-1.5 block"} "Divisão (%)"]
            [seletor-divisao (:divisao @form)
             (fn [nova-div] (swap! form assoc :divisao nova-div))]]
 
           ;; Botões
           [:div {:class "flex gap-2 pt-1"}
            (when (:id @form)
-             [:button {:class    "py-2.5 px-3 rounded-xl font-semibold text-red-500 bg-red-50 active:bg-red-100 transition-colors text-sm"
+             [:button {:class    "py-2.5 px-3 rounded-panel font-semibold text-bad bg-panel-2 hover:bg-rule-soft transition-colors text-sm"
                        :on-click #(do (rf/dispatch [:deletar-despesa (:id @form)])
                                       (rf/dispatch [:fechar-modal]))}
               "Deletar"])
            [c/botao-secundario "Cancelar" #(rf/dispatch [:fechar-modal]) {:class "flex-1"}]
-           [:button {:class    (str "flex-1 py-2.5 px-4 rounded-xl font-semibold text-white transition-colors text-sm "
-                                    (if soma-ok? "bg-blue-500 active:bg-blue-600" "bg-gray-300 cursor-not-allowed"))
+           [:button {:class    (str "flex-1 py-2.5 px-4 rounded-panel font-semibold text-white transition-colors text-sm "
+                                    (if soma-ok? "bg-ink hover:bg-ink-2 active:bg-ink" "bg-rule cursor-not-allowed text-ink-3"))
                      :disabled (not soma-ok?)
                      :on-click #(when soma-ok?
                                   (let [mes @(rf/subscribe [:mes-atual])]
@@ -265,13 +266,13 @@
        [:div {:class "space-y-3"}
         ;; Pessoa
         [:div
-         [:label {:class "text-xs font-medium text-gray-500 mb-1.5 block"} "Quem recebeu?"]
+         [:label {:class "text-xs font-medium text-ink-2 mb-1.5 block"} "Quem recebeu?"]
          [:div {:class "flex gap-1.5"}
           (for [pid pessoas-ids-sem-conjunta]
             ^{:key pid}
             (let [selecionado (= (:pessoa_id @form) pid)
                   cor         (u/pessoa-cor pid)]
-              [:button {:class "flex-1 py-2 rounded-xl text-sm font-medium border-2 transition-colors"
+              [:button {:class "flex-1 py-2 rounded-panel text-sm font-medium border-2 transition-colors"
                         :style (if selecionado
                                  {:background-color cor :border-color cor :color "white"}
                                  {:border-color "#E5E7EB" :color "#6B7280"})
@@ -281,22 +282,22 @@
         ;; Valor + Data
         [:div {:class "flex gap-2"}
          [:div {:class "flex-1"}
-          [:label {:class "text-xs font-medium text-gray-500 mb-1 block"} "Valor (R$)"]
+          [:label {:class "text-xs font-medium text-ink-2 mb-1 block"} "Valor (R$)"]
           [:input {:type        "number"
                    :inputMode   "decimal"
                    :pattern     "[0-9]*"
-                   :class       "w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                   :class       "w-full border border-rule rounded-panel px-3 py-2.5 text-sm focus:outline-none focus:border-ink"
                    :placeholder "0,00"
                    :value       (:valor @form)
                    :on-change   #(swap! form assoc :valor (.. % -target -value))}]]
          [:div {:class "flex-1"}
-          [:label {:class "text-xs font-medium text-gray-500 mb-1 block"} "Data"]
+          [:label {:class "text-xs font-medium text-ink-2 mb-1 block"} "Data"]
           [seletor-data (:data @form)
            #(swap! form assoc :data %)]]]
 
         ;; Descrição
         [:input {:type        "text"
-                 :class       "w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                 :class       "w-full border border-rule rounded-panel px-3 py-2.5 text-sm focus:outline-none focus:border-ink"
                  :placeholder "Descrição (ex: Salário, Freelance...)"
                  :value       (:descricao @form)
                  :on-change   #(swap! form assoc :descricao (.. % -target -value))}]
@@ -304,7 +305,7 @@
         ;; Botões
         [:div {:class "flex gap-2 pt-1"}
          (when (:id @form)
-           [:button {:class    "py-2.5 px-3 rounded-xl font-semibold text-red-500 bg-red-50 active:bg-red-100 transition-colors text-sm"
+           [:button {:class    "py-2.5 px-3 rounded-panel font-semibold text-bad bg-panel-2 hover:bg-rule-soft transition-colors text-sm"
                      :on-click #(do (rf/dispatch [:deletar-entrada (:id @form)])
                                     (rf/dispatch [:fechar-modal]))}
             "Deletar"])
@@ -341,26 +342,26 @@
           ;; Descrição + Categoria
           [:div {:class "flex gap-2"}
            [:input {:type        "text"
-                    :class       "flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    :class       "flex-1 border border-rule rounded-panel px-3 py-2.5 text-sm focus:outline-none focus:border-ink"
                     :placeholder "Descrição (ex: Aluguel, Internet...)"
                     :value       (:descricao @form)
                     :on-change   #(swap! form assoc :descricao (.. % -target -value))}]
            [:div {:class "relative flex-shrink-0"}
-            [:button {:class    "h-full px-3 border border-gray-200 rounded-xl text-sm bg-white"
+            [:button {:class    "h-full px-3 border border-rule rounded-panel text-sm bg-panel"
                       :on-click #(swap! aberto-cat? not)}
              (if cat-atual (:emoji cat-atual) "📂")]
             (when @aberto-cat?
-              [:div {:class "absolute right-0 top-12 bg-white rounded-2xl shadow-lg border border-gray-100 p-2 z-50 w-52"}
-               [:button {:class    "w-full text-left px-3 py-2 rounded-xl text-xs text-gray-500"
+              [:div {:class "absolute right-0 top-12 bg-panel rounded-panel shadow-lg border border-rule-soft p-2 z-50 w-52"}
+               [:button {:class    "w-full text-left px-3 py-2 rounded-panel text-xs text-ink-2"
                          :on-click #(do (swap! form assoc :categoria_id nil :categoria_nome nil)
                                         (reset! aberto-cat? false))}
                 "— Sem categoria"]
                (for [cat categorias]
                  ^{:key (:id cat)}
-                 [:button {:class    (str "w-full text-left px-3 py-2 rounded-xl text-xs "
+                 [:button {:class    (str "w-full text-left px-3 py-2 rounded-panel text-xs "
                                           (if (= (:id cat) (:categoria_id @form))
-                                            "bg-blue-50 text-blue-600 font-medium"
-                                            "text-gray-700"))
+                                            "bg-panel-2 text-ink font-medium"
+                                            "text-ink"))
                            :on-click #(do (swap! form assoc
                                                  :categoria_id (:id cat)
                                                  :categoria_nome (:nome cat))
@@ -370,16 +371,16 @@
           ;; Valor + Data
           [:div {:class "flex gap-2"}
            [:div {:class "flex-1"}
-            [:label {:class "text-xs font-medium text-gray-500 mb-1 block"} "Valor (R$)"]
+            [:label {:class "text-xs font-medium text-ink-2 mb-1 block"} "Valor (R$)"]
             [:input {:type        "number"
                      :inputMode   "decimal"
                      :pattern     "[0-9]*"
-                     :class       "w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                     :class       "w-full border border-rule rounded-panel px-3 py-2.5 text-sm focus:outline-none focus:border-ink"
                      :placeholder "0,00"
                      :value       (:valor_padrao @form)
                      :on-change   #(swap! form assoc :valor_padrao (.. % -target -value))}]]
            [:div {:class "flex-1"}
-            [:label {:class "text-xs font-medium text-gray-500 mb-1 block"} "Dia previsto"]
+            [:label {:class "text-xs font-medium text-ink-2 mb-1 block"} "Dia previsto"]
             [seletor-data (:data_input @form)
              (fn [v]
                (swap! form assoc
@@ -388,52 +389,52 @@
 
           ;; Forma pagamento
           [:div
-           [:label {:class "text-xs font-medium text-gray-500 mb-1.5 block"} "Forma de pagamento"]
+           [:label {:class "text-xs font-medium text-ink-2 mb-1.5 block"} "Forma de pagamento"]
            [:div {:class "flex gap-2"}
-            [:button {:class    (str "flex-1 py-2.5 rounded-xl text-sm font-medium border-2 transition-colors flex items-center justify-center gap-1.5 "
+            [:button {:class    (str "flex-1 py-2.5 rounded-panel text-sm font-medium border-2 transition-colors flex items-center justify-center gap-1.5 "
                                      (if (= (:forma_pagamento_padrao @form) "pix")
-                                       "bg-blue-500 text-white border-blue-500"
-                                       "text-gray-500 border-gray-200"))
+                                       "bg-ink text-cream border-ink"
+                                       "text-ink-2 border-rule"))
                       :on-click #(swap! form assoc :forma_pagamento_padrao "pix")}
              "💳 Pix/Débito"]
-            [:button {:class    (str "flex-1 py-2.5 rounded-xl text-sm font-medium border-2 transition-colors flex items-center justify-center gap-1.5 "
+            [:button {:class    (str "flex-1 py-2.5 rounded-panel text-sm font-medium border-2 transition-colors flex items-center justify-center gap-1.5 "
                                      (if (= (:forma_pagamento_padrao @form) "credito")
-                                       "bg-blue-500 text-white border-blue-500"
-                                       "text-gray-500 border-gray-200"))
+                                       "bg-ink text-cream border-ink"
+                                       "text-ink-2 border-rule"))
                       :on-click #(swap! form assoc :forma_pagamento_padrao "credito")}
              "💳 Crédito"]]]
 
           ;; Quem paga + Ativo
           [:div {:class "flex items-end justify-between"}
            [:div
-            [:label {:class "text-xs font-medium text-gray-500 mb-1.5 block"} "Quem paga?"]
+            [:label {:class "text-xs font-medium text-ink-2 mb-1.5 block"} "Quem paga?"]
             [seletor-pagadores (:pagador_padrao @form)
              (fn [ps] (swap! form assoc :pagador_padrao ps))]]
            [:div {:class "flex flex-col items-center gap-1"}
-            [:label {:class "text-xs font-medium text-gray-500"} "Ativo"]
-            [:button {:class    (str "w-10 h-10 rounded-xl border-2 flex items-center justify-center transition-colors "
+            [:label {:class "text-xs font-medium text-ink-2"} "Ativo"]
+            [:button {:class    (str "w-10 h-10 rounded-panel border-2 flex items-center justify-center transition-colors "
                                      (if (:ativo @form)
-                                       "bg-green-400 border-green-400 text-white"
-                                       "border-gray-200 text-gray-300"))
+                                       "bg-ok border-ok text-white"
+                                       "border-rule text-ink-3"))
                       :on-click #(swap! form update :ativo not)}
              "✓"]]]
 
           ;; Divisão
           [:div
-           [:label {:class "text-xs font-medium text-gray-500 mb-1.5 block"} "Divisão (%)"]
+           [:label {:class "text-xs font-medium text-ink-2 mb-1.5 block"} "Divisão (%)"]
            [seletor-divisao (:divisao @form)
             (fn [nova-div] (swap! form assoc :divisao nova-div))]]
 
           ;; Botões
           [:div {:class "flex gap-2 pt-1"}
            (when (:id @form)
-             [:button {:class    "py-2.5 px-3 rounded-xl font-semibold text-red-500 bg-red-50 active:bg-red-100 transition-colors text-sm"
+             [:button {:class    "py-2.5 px-3 rounded-panel font-semibold text-bad bg-panel-2 hover:bg-rule-soft transition-colors text-sm"
                        :on-click #(do (rf/dispatch [:deletar-template (:id @form)])
                                       (rf/dispatch [:fechar-modal]))}
               "Deletar"])
            [c/botao-secundario "Cancelar" #(rf/dispatch [:fechar-modal]) {:class "flex-1"}]
-           [:button {:class    (str "flex-1 py-2.5 px-4 rounded-xl font-semibold text-white transition-colors text-sm "
-                                    (if soma-ok? "bg-blue-500 active:bg-blue-600" "bg-gray-300 cursor-not-allowed"))
+           [:button {:class    (str "flex-1 py-2.5 px-4 rounded-panel font-semibold text-white transition-colors text-sm "
+                                    (if soma-ok? "bg-ink hover:bg-ink-2 active:bg-ink" "bg-rule cursor-not-allowed text-ink-3"))
                      :disabled (not soma-ok?)
                      :on-click #(when soma-ok?
                                   (rf/dispatch [:salvar-template
@@ -448,28 +449,28 @@
     (fn []
       [c/modal-wrapper "💳 Pagar Fatura"
        [:div {:class "space-y-3"}
-        [:div {:class "bg-gray-50 rounded-xl p-3"}
-         [:p {:class "text-xs text-gray-500 mb-1"} "Total da fatura"]
-         [:p {:class "text-xl font-bold text-gray-800"}
+        [:div {:class "bg-panel-2 rounded-panel p-3"}
+         [:p {:class "text-xs text-ink-2 mb-1"} "Total da fatura"]
+         [:p {:class "text-xl font-bold text-ink"}
           (u/formatar-valor-br total-credito)]]
         [:div
-         [:label {:class "text-xs font-medium text-gray-500 mb-1 block"} "Valor pago (R$)"]
+         [:label {:class "text-xs font-medium text-ink-2 mb-1 block"} "Valor pago (R$)"]
          [:input {:type        "number"
                   :inputMode   "decimal"
-                  :class       "w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  :class       "w-full border border-rule rounded-panel px-3 py-2.5 text-sm focus:outline-none focus:border-ink"
                   :placeholder "0,00"
                   :value       (:valor_pago @form)
                   :on-change   #(swap! form assoc :valor_pago (.. % -target -value))}]]
         [:div {:class "flex gap-2"}
-         [:button {:class    "flex-1 py-2 rounded-xl text-xs font-medium bg-gray-50 text-gray-600 border border-gray-200"
+         [:button {:class    "flex-1 py-2 rounded-panel text-xs font-medium bg-panel-2 text-ink-2 border border-rule"
                    :on-click #(swap! form assoc :valor_pago (str total-credito))}
           "Pagar total"]
-         [:button {:class    "flex-1 py-2 rounded-xl text-xs font-medium bg-gray-50 text-gray-600 border border-gray-200"
+         [:button {:class    "flex-1 py-2 rounded-panel text-xs font-medium bg-panel-2 text-ink-2 border border-rule"
                    :on-click #(swap! form assoc :valor_pago "")}
           "Limpar"]]
         ;; Botão remover pagamento (quando já tem pagamento)
         (when (and fatura (:valor_pago fatura) (> (:valor_pago fatura) 0))
-          [:button {:class    "w-full py-2 rounded-xl text-xs font-medium text-red-500 bg-red-50 border border-red-100"
+          [:button {:class    "w-full py-2 rounded-panel text-xs font-medium text-bad bg-panel-2 border border-rule-soft"
                     :on-click #(do (rf/dispatch [:desmarcar-fatura])
                                    (rf/dispatch [:fechar-modal]))}
            "Remover pagamento"])

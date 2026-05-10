@@ -159,6 +159,108 @@
 
 (rf/reg-sub :fatura (fn [db _] (:fatura db)))
 
+;; -- Subs do dashboard --
+
+(defn ano-da-data [data-str]
+  (when (and data-str (not= data-str ""))
+    (int (first (clojure.string/split data-str #"-")))))
+
+(rf/reg-sub
+ :posicao-pessoa-ano
+ :<- [:despesas-historico]
+ :<- [:entradas-historico]
+ :<- [:mes-atual]
+ (fn [[despesas entradas mes-atual] [_ pessoa-id]]
+   (let [ano       (:ano mes-atual)
+         div-key   (keyword pessoa-id)
+         desp-ano  (filter #(= (:ano %) ano) despesas)
+         ent-ano   (filter #(= (ano-da-data (:data %)) ano) entradas)
+         obrigacao (reduce + 0
+                           (map (fn [d]
+                                  (* (:valor d)
+                                     (/ (or (get (:divisao d) div-key) 0) 100.0)))
+                                desp-ano))
+         aporte    (reduce + 0
+                           (map :valor
+                                (filter #(= (:pessoa_id %) pessoa-id) ent-ano)))]
+     (- aporte obrigacao))))
+
+(rf/reg-sub
+ :rabo-cartao-ano
+ :<- [:despesas-historico]
+ :<- [:faturas-historico]
+ :<- [:mes-atual]
+ (fn [[despesas faturas mes-atual] _]
+   (let [ano             (:ano mes-atual)
+         credito-por-mes (group-by :mes
+                                   (filter #(and (= (:ano %) ano)
+                                                 (= (:forma_pagamento %) "credito"))
+                                           despesas))
+         fatura-map      (into {} (map (fn [f] [(:mes f) f])
+                                       (filter #(= (:ano %) ano) faturas)))]
+     (reduce + 0
+             (map (fn [[mes compras]]
+                    (let [total (reduce + 0 (map :valor compras))
+                          pago  (or (:valor_pago (get fatura-map mes)) 0)]
+                      (max 0 (- total pago))))
+                  credito-por-mes)))))
+
+;; -- Analise --
+
+(rf/reg-sub
+ :top-categorias-mes
+ :<- [:despesas-do-mes]
+ (fn [despesas _]
+   (->> despesas
+        (group-by #(or (:categoria_nome %) "Sem categoria"))
+        (map (fn [[cat ds]]
+               {:categoria cat
+                :total     (reduce + 0 (map :valor ds))
+                :count     (count ds)}))
+        (sort-by :total >)
+        vec)))
+
+(rf/reg-sub
+ :evolucao-mensal
+ :<- [:despesas-historico]
+ :<- [:entradas-historico]
+ :<- [:faturas-historico]
+ :<- [:mes-atual]
+ (fn [[despesas entradas faturas mes-atual] _]
+   (let [ano        (:ano mes-atual)
+         desp-ano   (filter #(= (:ano %) ano) despesas)
+         ent-ano    (filter #(= (ano-da-data (:data %)) ano) entradas)
+         fat-map    (into {} (map (fn [f] [(:mes f) f])
+                                  (filter #(= (:ano %) ano) faturas)))
+         despesas-credito-por-mes (group-by :mes
+                                            (filter #(= (:forma_pagamento %) "credito") desp-ano))]
+     (mapv (fn [m]
+             (let [desp-m (filter #(= (:mes %) m) desp-ano)
+                   ent-m  (filter (fn [e]
+                                    (when-let [d (:data e)]
+                                      (= (int (second (clojure.string/split d #"-"))) m)))
+                                  ent-ano)
+                   compras-cred (get despesas-credito-por-mes m [])
+                   total-cred   (reduce + 0 (map :valor compras-cred))
+                   pago-cred    (or (:valor_pago (get fat-map m)) 0)
+                   rabo         (max 0 (- total-cred pago-cred))]
+               {:mes      m
+                :entradas (reduce + 0 (map :valor ent-m))
+                :saidas   (reduce + 0 (map :valor desp-m))
+                :rabo     rabo}))
+           (range 1 13)))))
+
+(rf/reg-sub
+ :obrigacao-pessoa-mes
+ :<- [:despesas-do-mes]
+ (fn [despesas [_ pessoa-id]]
+   (let [div-key (keyword pessoa-id)]
+     (reduce + 0
+             (map (fn [d]
+                    (* (:valor d)
+                       (/ (or (get (:divisao d) div-key) 0) 100.0)))
+                  despesas)))))
+
 (rf/reg-sub
  :total-credito-mes
  :<- [:despesas-do-mes]

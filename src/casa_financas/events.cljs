@@ -189,7 +189,8 @@
 (rf/reg-event-fx
  :salvar-despesa
  (fn [{:keys [db]} [_ despesa]]
-   (let [despesa-ajustada (if (= (:forma_pagamento despesa) "credito")
+   (let [despesa-ajustada (if (and (= (:forma_pagamento despesa) "credito")
+                                   (:data_input despesa))
                             (let [data-parts (clojure.string/split (:data_input despesa) #"-")
                                   ano-c (int (first data-parts))
                                   mes-c (int (second data-parts))
@@ -211,6 +212,28 @@
        :supabase/salvar-despesa despesa-ajustada}
       (when (seq entradas-auto)
         {:dispatch-n (mapv (fn [e] [:salvar-entrada e]) entradas-auto)})))))
+
+;; Inline edit: atualiza um único campo de uma despesa sem disparar
+;; gerar-entradas-bolso (que faz sentido apenas no fluxo do modal/marcar-pago)
+(rf/reg-event-fx
+ :atualizar-despesa-inline
+ (fn [{:keys [db]} [_ id campo valor]]
+   (let [atual (first (filter #(= (:id %) id) (:despesas db)))
+         nova  (when atual (assoc atual campo valor))]
+     (when nova
+       {:db                      (update db :despesas
+                                         (fn [ds] (mapv #(if (= (:id %) id) nova %) ds)))
+        :supabase/salvar-despesa nova}))))
+
+(rf/reg-event-fx
+ :atualizar-entrada-inline
+ (fn [{:keys [db]} [_ id campo valor]]
+   (let [atual (first (filter #(= (:id %) id) (:entradas db)))
+         nova  (when atual (assoc atual campo valor))]
+     (when nova
+       {:db                      (update db :entradas
+                                         (fn [es] (mapv #(if (= (:id %) id) nova %) es)))
+        :supabase/salvar-entrada nova}))))
 
 (rf/reg-event-fx
  :deletar-despesa
@@ -466,20 +489,6 @@
    (supa/buscar-categorias!
     (fn [cats]
       (rf/dispatch [:set-categorias cats])))))
-
-;; -- Push Subscriptions --
-(rf/reg-event-fx
- :salvar-push-subscription
- (fn [_ [_ subscription user-id]]
-   {:supabase/salvar-push-subscription {:user-id user-id :subscription subscription}}))
-
-(rf/reg-fx
- :supabase/salvar-push-subscription
- (fn [{:keys [user-id subscription]}]
-   (supa/salvar-push-subscription! user-id subscription
-                                   (fn [err]
-                                     (when err
-                                       (js/console.error "Erro ao salvar push subscription" err))))))
 
 (rf/reg-event-db
  :set-categorias

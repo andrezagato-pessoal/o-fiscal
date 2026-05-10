@@ -1,3 +1,53 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --cream:    #FBF6EF;
+  --panel:    #FFFFFF;
+  --panel-2:  #F5EFE5;
+  --ink:      #231C12;
+  --ink-2:    #6B5F4D;
+  --ink-3:    #A99A82;
+  --rule:     #E8DFD0;
+  --rule-soft:#F2EBDD;
+  --warm:     #E97A3F;
+}
+
+html { font-feature-settings: 'cv11', 'ss01'; }
+body { background: var(--cream); color: var(--ink); }
+
+.num { font-feature-settings: 'tnum'; letter-spacing: -0.02em; }
+.display { font-weight: 700; letter-spacing: -0.025em; }
+
+/* Animação de save: pulse curtinho na linha tocada */
+@keyframes saved-pulse {
+  0%   { background: rgba(46,130,84,0.15); }
+  100% { background: transparent; }
+}
+[data-saved] { animation: saved-pulse 0.6s ease-out; }
+
+/* Inline edit: transição suave do display pra input */
+.cell-editable {
+  transition: background 120ms, box-shadow 120ms;
+  border-radius: 8px;
+  padding: 4px 8px;
+  margin: -4px -8px;
+}
+.cell-editable:hover { background: var(--panel-2); }
+.cell-editable[data-editing] {
+  background: var(--panel);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+
+/* Toast */
+.toast {
+  position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%);
+  background: var(--ink); color: var(--cream);
+  padding: 10px 16px; border-radius: 14px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; font-weight: 600;
+  box-shadow: 0 12px 32px rgba(35,28,18,0.4);
+  animation: toast-in 220ms cubic-bezier(.2,.7,.3,1);
+}
+@keyframes toast-in { from { opacity: 0; transform: translate(-50%, 8px); } }

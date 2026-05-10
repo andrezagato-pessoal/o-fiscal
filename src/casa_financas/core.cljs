@@ -1,7 +1,6 @@
 (ns casa-financas.core
   (:require [reagent.dom :as rdom]
             [re-frame.core :as rf]
-            ["lucide-react" :refer [Home Receipt Wallet FileText Settings]]
             [casa-financas.events]
             [casa-financas.subs]
             [casa-financas.views.login :as login]
@@ -11,31 +10,38 @@
             [casa-financas.views.templates :as templates]
             [casa-financas.views.modais :as modais]
             [casa-financas.views.settings :as settings]
-            [casa-financas.views.importar :as importar]))
+            [casa-financas.views.importar :as importar]
+            [casa-financas.views.admin :as admin]))
 
-(defn nav-item [aba icone label]
+(defn modo-admin? []
+  (let [search (.. js/window -location -search)]
+    (and search (clojure.string/includes? search "view=admin"))))
+
+(defn nav-item [aba emoji label]
   (let [aba-ativa @(rf/subscribe [:aba-ativa])
-        ativo?    (= aba-ativa aba)
-        cor       (if ativo? "#3B82F6" "#9CA3AF")]
-    [:button {:class    "flex flex-col items-center justify-center flex-1 py-2 transition-colors"
+        ativo?    (= aba-ativa aba)]
+    [:button {:class    "flex flex-col items-center justify-center flex-1 py-1 gap-0.5 transition-opacity"
               :on-click #(rf/dispatch [:set-aba aba])}
-     [:> icone {:size 22 :color cor :strokeWidth 1.8}]
-     [:span {:class (str "text-xs mt-0.5 font-medium "
-                         (if ativo? "text-blue-500" "text-gray-400"))}
+     [:span {:class (str "text-lg leading-none "
+                         (if ativo? "opacity-100" "opacity-50 grayscale"))}
+      emoji]
+     [:span {:class (str "text-[10px] font-bold tracking-wide "
+                         (if ativo? "text-ink" "text-ink-3"))}
       label]]))
 
 (defn nav-bottom []
-  [:div {:class "fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex items-center z-40 shadow-sm"
-         :style {:padding-bottom "calc(env(safe-area-inset-bottom) + 16px)"
-                  :padding-top "8px"}}
-   [nav-item :dashboard Home "Início"]
-   [nav-item :despesas Receipt "Despesas"]
-   [nav-item :entradas Wallet "Entradas"]
-   [nav-item :templates FileText "Templates"]
-   [nav-item :settings Settings "Config"]])
+  [:div {:class "fixed bottom-0 left-0 right-0 bg-panel/95 backdrop-blur-xl border-t border-rule flex items-center z-40"
+         :style {:padding-bottom "calc(env(safe-area-inset-bottom) + 12px)"
+                 :padding-top    "8px"}}
+   [nav-item :dashboard "🏠" "Início"]
+   [nav-item :despesas  "💸" "Despesas"]
+   [nav-item :entradas  "💰" "Entradas"]
+   [nav-item :templates "📋" "Recorr."]
+   [nav-item :settings  "⚙"  "Config"]])
 
 (defn botao-flutuante []
-  [:button {:class    "fixed bottom-24 right-4 w-12 h-12 bg-blue-500 rounded-full shadow-lg flex items-center justify-center text-white text-2xl z-40 active:bg-blue-600 transition-colors"
+  [:button {:class    "fixed bottom-24 right-4 w-14 h-14 bg-ink rounded-full flex items-center justify-center text-cream text-2xl font-light z-40 shadow-fab transition-transform active:scale-95"
+            :style    {:box-shadow "0 12px 24px rgba(35,28,18,0.28), 0 0 0 4px rgba(251,246,239,0.7)"}
             :on-click #(rf/dispatch [:abrir-modal :nova-acao {}])}
    "+"])
 
@@ -51,21 +57,23 @@
       [dashboard/dashboard])))
 
 (defn app-autenticado []
-  [:div {:class "min-h-screen bg-gray-50 max-w-lg mx-auto relative"}
-   [tela-ativa]
-   [nav-bottom]
-   [botao-flutuante]
-   [modais/modais]])
+  (if (modo-admin?)
+    [admin/admin]
+    [:div {:class "min-h-screen bg-cream max-w-lg mx-auto relative font-sans text-ink"}
+     [tela-ativa]
+     [nav-bottom]
+     [botao-flutuante]
+     [modais/modais]]))
 
 (defn app []
   (let [usuario @(rf/subscribe [:usuario-atual])
         loading @(rf/subscribe [:loading])]
     (cond
       loading
-      [:div {:class "min-h-screen flex items-center justify-center bg-blue-500"}
+      [:div {:class "min-h-screen flex items-center justify-center bg-cream"}
        [:div {:class "flex flex-col items-center gap-4"}
-        [:div {:class "w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"}]
-        [:p {:class "text-white font-medium"} "Carregando..."]]]
+        [:div {:class "w-10 h-10 border-2 border-ink border-t-transparent rounded-full animate-spin"}]
+        [:p {:class "text-ink-2 font-bold text-sm"} "Carregando..."]]]
 
       usuario
       [app-autenticado]
@@ -74,7 +82,12 @@
       [login/login])))
 
 (defn init []
+  ;; Limpa qualquer Service Worker antigo registrado em versões anteriores.
+  ;; Sem isso, dispositivos com SW preso continuariam servindo cache quebrado.
   (when (.-serviceWorker js/navigator)
-    (.register (.-serviceWorker js/navigator) "/sw.js"))
+    (-> (.getRegistrations (.-serviceWorker js/navigator))
+        (.then (fn [regs]
+                 (doseq [reg regs]
+                   (.unregister reg))))))
   (rf/dispatch-sync [:initialize-db])
   (rdom/render [app] (.getElementById js/document "app")))

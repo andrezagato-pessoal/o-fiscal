@@ -101,40 +101,40 @@
   [:div {:class "overflow-x-auto"}
    [:table {:class "w-full text-xs"}
     [:thead
-     [:tr {:class "border-b border-gray-200"}
-      [:th {:class "text-left py-1.5 text-gray-500 font-medium"} "Data"]
-      [:th {:class "text-left py-1.5 text-gray-500 font-medium"} "Descrição"]
-      [:th {:class "text-right py-1.5 text-gray-500 font-medium"} "Valor"]
-      [:th {:class "text-center py-1.5 text-gray-500 font-medium"} "Pago"]]]
+     [:tr {:class "border-b border-rule"}
+      [:th {:class "text-left py-1.5 text-ink-2 font-medium"} "Data"]
+      [:th {:class "text-left py-1.5 text-ink-2 font-medium"} "Descrição"]
+      [:th {:class "text-right py-1.5 text-ink-2 font-medium"} "Valor"]
+      [:th {:class "text-center py-1.5 text-ink-2 font-medium"} "Pago"]]]
     [:tbody
      (for [d despesas]
        ^{:key (:id d)}
-       [:tr {:class "border-b border-gray-50"}
-        [:td {:class "py-1.5 text-gray-600"}
+       [:tr {:class "border-b border-rule-soft"}
+        [:td {:class "py-1.5 text-ink-2"}
          (str (:dia_do_mes d) "/" (:mes d) "/" (:ano d))]
-        [:td {:class "py-1.5 text-gray-800 max-w-24 truncate"} (:descricao d)]
-        [:td {:class "py-1.5 text-right text-gray-800"} (u/formatar-valor-br (:valor d))]
+        [:td {:class "py-1.5 text-ink max-w-24 truncate"} (:descricao d)]
+        [:td {:class "py-1.5 text-right text-ink"} (u/formatar-valor-br (:valor d))]
         [:td {:class "py-1.5 text-center"}
          (if (:pago d)
-           [:span {:class "text-green-500"} "✓"]
-           [:span {:class "text-gray-300"} "–"])]])]]])
+           [:span {:class "text-ok"} "✓"]
+           [:span {:class "text-ink-3"} "–"])]])]]])
 
 (defn tabela-preview-entradas [entradas]
   [:div {:class "overflow-x-auto"}
    [:table {:class "w-full text-xs"}
     [:thead
-     [:tr {:class "border-b border-gray-200"}
-      [:th {:class "text-left py-1.5 text-gray-500 font-medium"} "Data"]
-      [:th {:class "text-left py-1.5 text-gray-500 font-medium"} "Pessoa"]
-      [:th {:class "text-right py-1.5 text-gray-500 font-medium"} "Valor"]]]
+     [:tr {:class "border-b border-rule"}
+      [:th {:class "text-left py-1.5 text-ink-2 font-medium"} "Data"]
+      [:th {:class "text-left py-1.5 text-ink-2 font-medium"} "Pessoa"]
+      [:th {:class "text-right py-1.5 text-ink-2 font-medium"} "Valor"]]]
     [:tbody
      (for [e entradas]
        ^{:key (:id e)}
-       [:tr {:class "border-b border-gray-50"}
-        [:td {:class "py-1.5 text-gray-600"} (:data e)]
+       [:tr {:class "border-b border-rule-soft"}
+        [:td {:class "py-1.5 text-ink-2"} (:data e)]
         [:td {:class "py-1.5"}
          [c/chip-pessoa (:pessoa_id e)]]
-        [:td {:class "py-1.5 text-right text-green-600 font-medium"}
+        [:td {:class "py-1.5 text-right text-ok font-medium"}
          (u/formatar-valor-br (:valor e))]])]]])
 
 (defn importar []
@@ -149,26 +149,26 @@
        [:div {:class "p-3 space-y-3"}
 
         ;; Título
-        [:div {:class "bg-white rounded-2xl p-4 border border-gray-100 shadow-sm"}
-         [:h2 {:class "font-bold text-gray-800 mb-1"} "Importar do CSV"]
-         [:p {:class "text-xs text-gray-500"}
+        [:div {:class "bg-panel rounded-panel p-4 border border-rule-soft shadow-sm"}
+         [:h2 {:class "font-bold text-ink mb-1"} "Importar do CSV"]
+         [:p {:class "text-xs text-ink-2"}
           "Cole o conteúdo do CSV exportado do Google Sheets. Inclua o cabeçalho."]]
 
         ;; Toggle despesas/entradas
-        [:div {:class "flex gap-2 p-1.5 bg-white rounded-2xl border border-gray-100 shadow-sm"}
-         [:button {:class    (str "flex-1 py-1.5 rounded-xl text-sm font-medium transition-colors "
+        [:div {:class "flex gap-2 p-1.5 bg-panel rounded-panel border border-rule-soft shadow-sm"}
+         [:button {:class    (str "flex-1 py-1.5 rounded-panel text-sm font-medium transition-colors "
                                   (if (= @aba :despesas)
-                                    "bg-blue-500 text-white"
-                                    "text-gray-500"))
+                                    "bg-ink text-cream"
+                                    "text-ink-2"))
                    :on-click #(do (reset! aba :despesas)
                                   (reset! preview nil)
                                   (reset! csv-texto "")
                                   (reset! importado false))}
           "💸 Despesas"]
-         [:button {:class    (str "flex-1 py-1.5 rounded-xl text-sm font-medium transition-colors "
+         [:button {:class    (str "flex-1 py-1.5 rounded-panel text-sm font-medium transition-colors "
                                   (if (= @aba :entradas)
-                                    "bg-blue-500 text-white"
-                                    "text-gray-500"))
+                                    "bg-ink text-cream"
+                                    "text-ink-2"))
                    :on-click #(do (reset! aba :entradas)
                                   (reset! preview nil)
                                   (reset! csv-texto "")
@@ -176,12 +176,12 @@
           "💰 Entradas"]]
 
         ;; Área de texto CSV
-        [:div {:class "bg-white rounded-2xl border border-gray-100 shadow-sm p-3"}
-         [:label {:class "text-xs font-medium text-gray-500 mb-1.5 block"}
+        [:div {:class "bg-panel rounded-panel border border-rule-soft shadow-sm p-3"}
+         [:label {:class "text-xs font-medium text-ink-2 mb-1.5 block"}
           (if (= @aba :despesas)
             "Cole o CSV de Despesas aqui:"
             "Cole o CSV de Entradas aqui:")]
-         [:textarea {:class       "w-full h-32 border border-gray-200 rounded-xl px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
+         [:textarea {:class       "w-full h-32 border border-rule rounded-panel px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
                      :placeholder (if (= @aba :despesas)
                                     "Gastos,Descrição,Valor,Método,Pago Por,Forma de Divisão,Quitado\n23/02/2026,Mercado,\"R$ 150,00\",Crédito,Conjunta,25/25/25/25,"
                                     "Entradas,Usuário,Valor\n05/02/2026,Andre,\"R$ 3.000,00\"")
@@ -202,12 +202,12 @@
 
         ;; Preview
         (when @preview
-          [:div {:class "bg-white rounded-2xl border border-gray-100 shadow-sm p-3"}
+          [:div {:class "bg-panel rounded-panel border border-rule-soft shadow-sm p-3"}
            [:div {:class "flex justify-between items-center mb-2"}
-            [:p {:class "text-xs font-medium text-gray-600"}
+            [:p {:class "text-xs font-medium text-ink-2"}
              (str (count @preview) " registros encontrados")]
             (when @importado
-              [:span {:class "text-xs text-green-600 font-medium"} "✓ Importado!"])]
+              [:span {:class "text-xs text-ok font-medium"} "✓ Importado!"])]
            (if (= @aba :despesas)
              [tabela-preview-despesas @preview]
              [tabela-preview-entradas @preview])
