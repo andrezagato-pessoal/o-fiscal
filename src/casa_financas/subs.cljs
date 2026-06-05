@@ -275,3 +275,10 @@
    (let [pago-pix (reduce + 0 (map :valor (filter #(and (:pago %) (not= (:forma_pagamento %) "credito")) despesas)))
          pago-fatura (or (:valor_pago fatura) 0)]
      (+ pago-pix pago-fatura))))
+
+(rf/reg-sub
+ :saldo-conta
+ :<- [:configuracoes]
+ (fn [configs _]
+   (when-let [v (get configs "saldo_conta")]
+     (js/parseFloat v))))

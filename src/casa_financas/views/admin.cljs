@@ -7,6 +7,8 @@
 
 (def pessoas-ids ["andre" "bianca" "fernanda" "bruna"])
 
+(declare cell-number)
+
 ;; =========================================================================
 ;; Header
 ;; =========================================================================
@@ -45,7 +47,8 @@
         pct          (if (> total-prev 0) (min 100 (* 100 (/ total-pago total-prev))) 0)
         n-pagas      (count (filter :pago despesas-mes))
         n-vencidas   (count (filter #(= (u/despesa-status %) :vencida) despesas-mes))
-        n-pendentes  (count (filter #(= (u/despesa-status %) :pendente) despesas-mes))]
+        n-pendentes  (count (filter #(= (u/despesa-status %) :pendente) despesas-mes))
+        saldo-conta  @(rf/subscribe [:saldo-conta])]
     [:section {:class "px-9 pb-6"}
      [:div {:class "grid grid-cols-12 gap-4"}
       ;; Hero principal (col-span-7)
@@ -86,6 +89,21 @@
            "● " n-pagas " paga" (when (> n-pagas 1) "s")])]]
       ;; Cards à direita (col-span-5)
       [:div {:class "col-span-12 lg:col-span-5 grid grid-cols-1 gap-4"}
+       ;; Saldo conta conjunta
+       [:div {:class "rounded-panel p-5 bg-panel border border-rule shadow-soft"}
+        [:div {:class "flex items-center gap-2 mb-2"}
+         [:span {:class "w-2.5 h-2.5 rounded-full bg-ok"}]
+         [c/label "Saldo conta conjunta"]]
+        [:div {:class (str "display num text-4xl "
+                           (cond
+                             (nil? saldo-conta)     "text-ink-3"
+                             (>= saldo-conta 0)     "text-ok"
+                             :else                  "text-bad"))}
+         [cell-number (or saldo-conta 0)
+          #(rf/dispatch [:salvar-saldo-conta %])
+          {:formatter u/formatar-valor-br}]]
+        [:p {:class "text-[11px] text-ink-3 font-semibold mt-1"}
+         "atualizado manualmente · clique para editar"]]
        ;; Cartão em aberto (warm)
        [:div {:class "rounded-panel p-5"
               :style {:background "#FFF1E5" :border "1.5px solid #F5DDC2"}}

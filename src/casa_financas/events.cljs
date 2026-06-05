@@ -477,6 +477,12 @@
      {:db (assoc-in db [:configuracoes chave] cor)
       :supabase/salvar-configuracao {:chave chave :valor cor}})))
 
+(rf/reg-event-fx
+ :salvar-saldo-conta
+ (fn [{:keys [db]} [_ valor]]
+   {:db (assoc-in db [:configuracoes "saldo_conta"] (str valor))
+    :supabase/salvar-configuracao {:chave "saldo_conta" :valor (str valor)}}))
+
 (rf/reg-fx
  :supabase/salvar-configuracao
  (fn [{:keys [chave valor]}]
