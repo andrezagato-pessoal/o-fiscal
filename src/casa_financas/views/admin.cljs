@@ -565,7 +565,7 @@
      [:div {:class "mb-3"}
       [:h2 {:class "display text-[22px]"} "Saldos por pessoa"]
       [:p {:class "text-[11px] text-ink-3 font-semibold mt-0.5"}
-       "Pagou (aporte) · custo (cota) · saldo do mês · acumulado — todo o histórico"]]
+       "Pagou (aporte) · custo (cota) · saldo do mês · acumulado — histórico até o mês selecionado"]]
      ;; cards de acumulado TOTAL
      [:div {:class "grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5"}
       (for [pid pessoas-ids]
@@ -579,7 +579,7 @@
            [:p {:class (str "display num text-3xl leading-[1.05] " (if pos? "text-ok" "text-bad"))}
             (str (when pos? "+") (u/formatar-valor-br tot))]
            [:p {:class "text-[11px] text-ink-3 font-semibold mt-1"}
-            (if pos? "credor (acumulado total)" "devedor (acumulado total)")]]))]
+            (if pos? "credor (acumulado até o mês)" "devedor (acumulado até o mês)")]]))]
      ;; tabela mensal por pessoa
      [:div {:class "grid grid-cols-1 lg:grid-cols-2 gap-4"}
       (for [pid pessoas-ids]

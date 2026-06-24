@@ -170,23 +170,13 @@
     (let [p (clojure.string/split data-str #"-")]
       [(int (first p)) (int (second p))])))
 
-;; Acumulado de TODO o historico (regime de competencia): aporte - cota,
-;; sem filtrar por ano. Reproduz o "Saldo" da planilha antiga.
+;; Acumulado carregando todo o historico passado ATE o mes selecionado
+;; (NAO inclui meses futuros). Deriva do resumo do mes atual.
 (rf/reg-sub
  :posicao-pessoa-total
- :<- [:despesas-historico]
- :<- [:entradas-historico]
- (fn [[despesas entradas] [_ pessoa-id]]
-   (let [div-key   (keyword pessoa-id)
-         obrigacao (reduce + 0
-                           (map (fn [d]
-                                  (* (:valor d)
-                                     (/ (or (get (:divisao d) div-key) 0) 100.0)))
-                                despesas))
-         aporte    (reduce + 0
-                           (map :valor
-                                (filter #(= (:pessoa_id %) pessoa-id) entradas)))]
-     (- aporte obrigacao))))
+ :<- [:resumo-mes-atual]
+ (fn [dados [_ pessoa-id]]
+   (get-in dados [pessoa-id :acumulado] 0)))
 
 ;; Tabela por pessoa x mes: aporte (pagou), cota (custo), saldo do mes e
 ;; acumulado corrido, para todo o historico.
@@ -194,10 +184,14 @@
  :resumo-mensal-pessoas
  :<- [:despesas-historico]
  :<- [:entradas-historico]
- (fn [[despesas entradas] _]
+ :<- [:mes-atual]
+ (fn [[despesas entradas mes-atual] _]
    (let [pessoas ["andre" "bianca" "fernanda" "bruna"]
-         meses   (sort (distinct (concat (map (fn [d] [(:ano d) (:mes d)]) despesas)
-                                         (keep #(mes-da-data (:data %)) entradas))))]
+         lim     [(:ano mes-atual) (:mes mes-atual)]
+         meses   (->> (concat (map (fn [d] [(:ano d) (:mes d)]) despesas)
+                              (keep #(mes-da-data (:data %)) entradas))
+                      distinct sort
+                      (filter #(<= (compare % lim) 0)))]
      (first
       (reduce
        (fn [[linhas acc] [ano mes]]
