@@ -25,9 +25,9 @@ return re_frame.core.dispatch(new cljs.core.PersistentVector(null, 3, 5, cljs.co
 });
 casa_financas.core.tela_ativa = (function casa_financas$core$tela_ativa(){
 var aba = cljs.core.deref(re_frame.core.subscribe.cljs$core$IFn$_invoke$arity$1(new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"aba-ativa","aba-ativa",1507807669)], null)));
-var G__6827 = aba;
-var G__6827__$1 = (((G__6827 instanceof cljs.core.Keyword))?G__6827.fqn:null);
-switch (G__6827__$1) {
+var G__6703 = aba;
+var G__6703__$1 = (((G__6703 instanceof cljs.core.Keyword))?G__6703.fqn:null);
+switch (G__6703__$1) {
 case "dashboard":
 return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [casa_financas.views.dashboard.dashboard], null);
 
@@ -81,53 +81,53 @@ return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMP
 casa_financas.core.init = (function casa_financas$core$init(){
 if(cljs.core.truth_(navigator.serviceWorker)){
 navigator.serviceWorker.getRegistrations().then((function (regs){
-var seq__6828 = cljs.core.seq(regs);
-var chunk__6829 = null;
-var count__6830 = (0);
-var i__6831 = (0);
+var seq__6705 = cljs.core.seq(regs);
+var chunk__6706 = null;
+var count__6707 = (0);
+var i__6708 = (0);
 while(true){
-if((i__6831 < count__6830)){
-var reg = chunk__6829.cljs$core$IIndexed$_nth$arity$2(null,i__6831);
+if((i__6708 < count__6707)){
+var reg = chunk__6706.cljs$core$IIndexed$_nth$arity$2(null,i__6708);
 reg.unregister();
 
 
-var G__6833 = seq__6828;
-var G__6834 = chunk__6829;
-var G__6835 = count__6830;
-var G__6836 = (i__6831 + (1));
-seq__6828 = G__6833;
-chunk__6829 = G__6834;
-count__6830 = G__6835;
-i__6831 = G__6836;
+var G__6710 = seq__6705;
+var G__6711 = chunk__6706;
+var G__6712 = count__6707;
+var G__6713 = (i__6708 + (1));
+seq__6705 = G__6710;
+chunk__6706 = G__6711;
+count__6707 = G__6712;
+i__6708 = G__6713;
 continue;
 } else {
-var temp__5823__auto__ = cljs.core.seq(seq__6828);
+var temp__5823__auto__ = cljs.core.seq(seq__6705);
 if(temp__5823__auto__){
-var seq__6828__$1 = temp__5823__auto__;
-if(cljs.core.chunked_seq_QMARK_(seq__6828__$1)){
-var c__5673__auto__ = cljs.core.chunk_first(seq__6828__$1);
-var G__6837 = cljs.core.chunk_rest(seq__6828__$1);
-var G__6838 = c__5673__auto__;
-var G__6839 = cljs.core.count(c__5673__auto__);
-var G__6840 = (0);
-seq__6828 = G__6837;
-chunk__6829 = G__6838;
-count__6830 = G__6839;
-i__6831 = G__6840;
+var seq__6705__$1 = temp__5823__auto__;
+if(cljs.core.chunked_seq_QMARK_(seq__6705__$1)){
+var c__5673__auto__ = cljs.core.chunk_first(seq__6705__$1);
+var G__6714 = cljs.core.chunk_rest(seq__6705__$1);
+var G__6715 = c__5673__auto__;
+var G__6716 = cljs.core.count(c__5673__auto__);
+var G__6717 = (0);
+seq__6705 = G__6714;
+chunk__6706 = G__6715;
+count__6707 = G__6716;
+i__6708 = G__6717;
 continue;
 } else {
-var reg = cljs.core.first(seq__6828__$1);
+var reg = cljs.core.first(seq__6705__$1);
 reg.unregister();
 
 
-var G__6841 = cljs.core.next(seq__6828__$1);
-var G__6842 = null;
-var G__6843 = (0);
-var G__6844 = (0);
-seq__6828 = G__6841;
-chunk__6829 = G__6842;
-count__6830 = G__6843;
-i__6831 = G__6844;
+var G__6718 = cljs.core.next(seq__6705__$1);
+var G__6719 = null;
+var G__6720 = (0);
+var G__6721 = (0);
+seq__6705 = G__6718;
+chunk__6706 = G__6719;
+count__6707 = G__6720;
+i__6708 = G__6721;
 continue;
 }
 } else {

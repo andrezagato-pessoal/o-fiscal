@@ -16,10 +16,10 @@
     (- total-entradas debitos)))
 
 ;; -- Card de pessoa (panel sem cor de fundo) -------------------------------
-(defn card-pessoa [pessoa-id despesas-mes entradas-mes]
-  (let [saldo-mes  (calcular-saldo-pessoa pessoa-id despesas-mes entradas-mes)
-        saldo-ant  @(rf/subscribe [:saldo-acumulado-anterior-pessoa pessoa-id])
-        saldo-total (+ saldo-mes saldo-ant)
+(defn card-pessoa [pessoa-id]
+  ;; mesma fonte do admin: acumulado por competencia ate o mes selecionado
+  (let [dados       @(rf/subscribe [:resumo-mes-atual])
+        saldo-total (or (:acumulado (get dados pessoa-id)) 0)
         positivo?   (>= saldo-total 0)]
     [:div {:class "bg-panel rounded-panel border border-rule p-3.5 shadow-soft"}
      [:div {:class "flex items-center gap-2 mb-2"}
@@ -106,16 +106,14 @@
 
 ;; -- View principal --------------------------------------------------------
 (defn dashboard []
-  (let [despesas-mes @(rf/subscribe [:despesas-do-mes])
-        entradas-mes @(rf/subscribe [:entradas-do-mes])]
-    [:div {:class "flex flex-col pb-28"}
-     [header]
-     [:div {:class "px-4 mt-1"}
-      [hero]
-      [:div {:class "mt-5 mb-2 px-1"}
-       [c/label "Posição da família"]]
-      [:div {:class "grid grid-cols-2 gap-2.5"}
-       (for [pid pessoas-ids]
-         ^{:key pid}
-         [card-pessoa pid despesas-mes entradas-mes])]
-      [card-alerta-cartao]]]))
+  [:div {:class "flex flex-col pb-28"}
+   [header]
+   [:div {:class "px-4 mt-1"}
+    [hero]
+    [:div {:class "mt-5 mb-2 px-1"}
+     [c/label "Posição da família"]]
+    [:div {:class "grid grid-cols-2 gap-2.5"}
+     (for [pid pessoas-ids]
+       ^{:key pid}
+       [card-pessoa pid])]
+    [card-alerta-cartao]]])
