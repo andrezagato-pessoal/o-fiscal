@@ -325,32 +325,14 @@
                            (rf/dispatch [:deletar-despesa (:id d)]))}
      "✕"]]])
 
+;; Cabecalho do grupo de credito (modelo competencia — sem fatura_cartao)
 (defn fatura-row []
-  (let [fatura @(rf/subscribe [:fatura])
-        total  @(rf/subscribe [:total-credito-mes])
-        pago   (or (:valor_pago fatura) 0)
-        status (cond
-                 (and (> total 0) (>= pago total)) :paga
-                 (> pago 0)                        :parcial
-                 :else                              :pendente)]
-    [:tr {:class "border-t-2 border-rule"
-          :style {:background "#FFF7EE"}}
-     [:td {:class "px-4 py-3 text-center"} "💳"]
-     [:td {:class "px-4 py-3 font-bold" :style {:color "#3F2A0E"}}
-      "Fatura cartão"]
-     [:td {:class "px-4 py-3 num font-bold" :style {:color "#7A4F1F"}}
-      (str (u/formatar-valor-br pago) " / " (u/formatar-valor-br total))]
-     [:td {:class "px-4 py-3" :col-span 4}
-      [:span {:class "inline-flex items-center gap-1.5 text-[11.5px] font-bold"
-              :style {:color (case status :paga "#2E8254" :parcial "#D08A2A" "#A99A82")}}
-       [:span {:class "w-1.5 h-1.5 rounded-full"
-               :style {:background-color (case status :paga "#2E8254" :parcial "#D08A2A" "#A99A82")}}]
-       (case status :paga "Paga" :parcial "Parcial" "Pendente")]]
-     [:td {:class "px-4 py-3 text-center"}
-      [:button {:class    "px-3 py-1 bg-ink text-cream text-xs rounded-pill font-bold hover:bg-ink-2"
-                :on-click #(rf/dispatch [:abrir-modal :pagamento-fatura fatura])}
-       "Pagar"]]
-     [:td]]))
+  (let [total @(rf/subscribe [:total-credito-mes])]
+    [:tr {:class "border-t-2 border-rule" :style {:background "#FFF7EE"}}
+     [:td {:class "px-4 py-2 text-center"} "💳"]
+     [:td {:col-span 8 :class "px-4 py-2 text-[11px] font-bold uppercase tracking-[0.5px]"
+           :style {:color "#7A4F1F"}}
+      (str "Cartão de crédito · " (u/formatar-valor-br total) " no mês")]]))
 
 (defn tabela-despesas []
   (let [despesas @(rf/subscribe [:despesas-do-mes])

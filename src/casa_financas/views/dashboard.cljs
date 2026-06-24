@@ -89,8 +89,8 @@
 
 ;; -- Card de alerta cartão -------------------------------------------------
 (defn card-alerta-cartao []
-  (let [rabo @(rf/subscribe [:rabo-cartao-ano])]
-    (when (> rabo 0)
+  (let [total @(rf/subscribe [:total-credito-mes])]
+    (when (> total 0)
       [:div {:class "rounded-panel border p-4 mt-3"
              :style {:background "#FFF1E5" :border-color "#F5DDC2"}}
        [:div {:class "flex items-center gap-2.5"}
@@ -98,11 +98,11 @@
                :style {:background "#FFE6CB" :color "#E97A3F"}}
          "💳"]
         [:div {:class "flex-1 min-w-0"}
-         [:p {:class "text-[12.5px] font-bold" :style {:color "#7A4F1F"}} "Cartão em aberto"]
+         [:p {:class "text-[12.5px] font-bold" :style {:color "#7A4F1F"}} "Cartão do mês"]
          [:p {:class "text-[10.5px] font-semibold mt-0.5" :style {:color "#9A6B3A"}}
-          "rabo de meses anteriores"]]
+          "compras e parcelas na fatura"]]
         [:p {:class "display num text-lg" :style {:color "#7A4F1F"}}
-         (u/formatar-valor-br rabo)]]])))
+         (u/formatar-valor-br total)]]])))
 
 ;; -- View principal --------------------------------------------------------
 (defn dashboard []
