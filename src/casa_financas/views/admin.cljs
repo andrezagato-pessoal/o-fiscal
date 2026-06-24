@@ -551,6 +551,66 @@
    [card-evolucao-mensal]])
 
 ;; =========================================================================
+;; Saldos por pessoa (todo o historico): pagou / custo / saldo mes / acumulado
+;; =========================================================================
+
+(defn painel-saldos []
+  (let [resumo @(rf/subscribe [:resumo-mensal-pessoas])]
+    [:section {:class "px-9 pb-6"}
+     [:div {:class "mb-3"}
+      [:h2 {:class "display text-[22px]"} "Saldos por pessoa"]
+      [:p {:class "text-[11px] text-ink-3 font-semibold mt-0.5"}
+       "Pagou (aporte) · custo (cota) · saldo do mês · acumulado — todo o histórico"]]
+     ;; cards de acumulado TOTAL
+     [:div {:class "grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5"}
+      (for [pid pessoas-ids]
+        (let [tot  @(rf/subscribe [:posicao-pessoa-total pid])
+              pos? (>= tot 0)]
+          ^{:key pid}
+          [:div {:class "bg-panel rounded-panel border border-rule p-5 shadow-soft"}
+           [:div {:class "flex items-center gap-2 mb-2"}
+            [c/avatar pid {:size "sm"}]
+            [:span {:class "text-[13px] font-bold text-ink"} (u/pessoa-nome pid)]]
+           [:p {:class (str "display num text-3xl leading-[1.05] " (if pos? "text-ok" "text-bad"))}
+            (str (when pos? "+") (u/formatar-valor-br tot))]
+           [:p {:class "text-[11px] text-ink-3 font-semibold mt-1"}
+            (if pos? "credor (acumulado total)" "devedor (acumulado total)")]]))]
+     ;; tabela mensal por pessoa
+     [:div {:class "grid grid-cols-1 lg:grid-cols-2 gap-4"}
+      (for [pid pessoas-ids]
+        ^{:key pid}
+        [:div {:class "bg-panel rounded-panel border border-rule p-5 shadow-soft"}
+         [:div {:class "flex items-center gap-2 mb-3"}
+          [c/avatar pid {:size "sm"}]
+          [:span {:class "text-[14px] font-bold text-ink"} (u/pessoa-nome pid)]]
+         [:div {:class "overflow-x-auto"}
+          [:table {:class "w-full"}
+           [:thead
+            [:tr {:class "border-b border-rule"}
+             [:th {:class "px-2 py-1.5 text-left text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Mês"]
+             [:th {:class "px-2 py-1.5 text-right text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Pagou"]
+             [:th {:class "px-2 py-1.5 text-right text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Custo"]
+             [:th {:class "px-2 py-1.5 text-right text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Saldo mês"]
+             [:th {:class "px-2 py-1.5 text-right text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Acumulado"]]]
+           [:tbody
+            (for [{:keys [ano mes pessoas]} resumo]
+              (let [d (get pessoas pid)]
+                ^{:key (str ano "-" mes)}
+                [:tr {:class "border-t border-rule-soft"}
+                 [:td {:class "px-2 py-1.5 text-[12px] font-semibold text-ink"}
+                  (str (u/mes-nome mes) "/" (- ano 2000))]
+                 [:td {:class "px-2 py-1.5 text-right num text-[12px] text-ok font-semibold"}
+                  (u/formatar-valor-br (:aporte d))]
+                 [:td {:class "px-2 py-1.5 text-right num text-[12px] text-ink-2"}
+                  (u/formatar-valor-br (:cota d))]
+                 [:td {:class (str "px-2 py-1.5 text-right num text-[12px] font-semibold "
+                                   (if (>= (:saldo d) 0) "text-ok" "text-bad"))}
+                  (str (when (>= (:saldo d) 0) "+") (u/formatar-valor-br (:saldo d)))]
+                 [:td {:class (str "px-2 py-1.5 text-right num text-[12px] font-bold "
+                                   (if (>= (:acumulado d) 0) "text-ok" "text-bad"))}
+                  (str (when (>= (:acumulado d) 0) "+") (u/formatar-valor-br (:acumulado d)))]]))]]]])]]))
+
+;; =========================================================================
 ;; View principal
 ;; =========================================================================
 
@@ -559,6 +619,7 @@
    [header]
    [hero]
    [painel-posicao]
+   [painel-saldos]
    [tabela-despesas]
    [tabela-entradas]
    [painel-analise]

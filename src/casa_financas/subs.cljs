@@ -165,6 +165,59 @@
   (when (and data-str (not= data-str ""))
     (int (first (clojure.string/split data-str #"-")))))
 
+(defn mes-da-data [data-str]
+  (when (and data-str (not= data-str ""))
+    (let [p (clojure.string/split data-str #"-")]
+      [(int (first p)) (int (second p))])))
+
+;; Acumulado de TODO o historico (regime de competencia): aporte - cota,
+;; sem filtrar por ano. Reproduz o "Saldo" da planilha antiga.
+(rf/reg-sub
+ :posicao-pessoa-total
+ :<- [:despesas-historico]
+ :<- [:entradas-historico]
+ (fn [[despesas entradas] [_ pessoa-id]]
+   (let [div-key   (keyword pessoa-id)
+         obrigacao (reduce + 0
+                           (map (fn [d]
+                                  (* (:valor d)
+                                     (/ (or (get (:divisao d) div-key) 0) 100.0)))
+                                despesas))
+         aporte    (reduce + 0
+                           (map :valor
+                                (filter #(= (:pessoa_id %) pessoa-id) entradas)))]
+     (- aporte obrigacao))))
+
+;; Tabela por pessoa x mes: aporte (pagou), cota (custo), saldo do mes e
+;; acumulado corrido, para todo o historico.
+(rf/reg-sub
+ :resumo-mensal-pessoas
+ :<- [:despesas-historico]
+ :<- [:entradas-historico]
+ (fn [[despesas entradas] _]
+   (let [pessoas ["andre" "bianca" "fernanda" "bruna"]
+         meses   (sort (distinct (concat (map (fn [d] [(:ano d) (:mes d)]) despesas)
+                                         (keep #(mes-da-data (:data %)) entradas))))]
+     (first
+      (reduce
+       (fn [[linhas acc] [ano mes]]
+         (let [desp-m (filter #(and (= (:ano %) ano) (= (:mes %) mes)) despesas)
+               ent-m  (filter #(= (mes-da-data (:data %)) [ano mes]) entradas)
+               [linha acc2]
+               (reduce
+                (fn [[lm am] pid]
+                  (let [dk     (keyword pid)
+                        cota   (reduce + 0 (map (fn [d] (* (:valor d) (/ (or (get (:divisao d) dk) 0) 100.0))) desp-m))
+                        aporte (reduce + 0 (map :valor (filter #(= (:pessoa_id %) pid) ent-m)))
+                        saldo  (- aporte cota)
+                        novo   (+ (get am pid) saldo)]
+                    [(assoc lm pid {:aporte aporte :cota cota :saldo saldo :acumulado novo})
+                     (assoc am pid novo)]))
+                [{} acc] pessoas)]
+           [(conj linhas {:ano ano :mes mes :pessoas linha}) acc2]))
+       [[] {"andre" 0 "bianca" 0 "fernanda" 0 "bruna" 0}]
+       meses)))))
+
 (rf/reg-sub
  :posicao-pessoa-ano
  :<- [:despesas-historico]
