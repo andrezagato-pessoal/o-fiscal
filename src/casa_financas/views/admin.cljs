@@ -101,7 +101,7 @@
                              :else                  "text-bad"))}
          [cell-number (or saldo-conta 0)
           #(rf/dispatch [:salvar-saldo-conta %])
-          {:formatter u/formatar-valor-br}]]
+          {:formatter u/formatar-valor-br :class "text-4xl"}]]
         [:p {:class "text-[11px] text-ink-3 font-semibold mt-1"}
          "atualizado manualmente · clique para editar"]]
        ;; Cartão deste mês (warm)
@@ -209,7 +209,7 @@
       (if @editing?
         [:input {:type        "number"
                  :step        (or step "0.01")
-                 :class       (str "cell-editable w-full num text-[13px] text-right focus:outline-none " class)
+                 :class       (str "cell-editable w-full num text-right focus:outline-none " (or class "text-[13px]"))
                  :data-editing true
                  :auto-focus  true
                  :value       @novo
@@ -228,7 +228,7 @@
                                   "Escape" (do (reset! novo (str (or valor "")))
                                                (reset! editing? false))
                                   nil))}]
-        [:div {:class    (str "cell-editable num text-[13px] text-right " class)
+        [:div {:class    (str "cell-editable num text-right " (or class "text-[13px]"))
                :on-click (fn [] (reset! novo (str (or valor ""))) (reset! editing? true))}
          (if formatter (formatter valor) (str valor))]))))
 
@@ -292,8 +292,9 @@
 ;; Tabela de despesas
 ;; =========================================================================
 
-(defn linha-despesa [d]
-  [:tr {:class "border-t border-rule-soft hover:bg-panel-2 transition-colors"}
+(defn linha-despesa [d cartao?]
+  [:tr {:class "border-t border-rule-soft hover:bg-panel-2 transition-colors"
+        :style (when cartao? {:background "#FFFBF4"})}
    [:td {:class "px-4 py-3 num font-semibold text-ink-2 w-14"}
     [cell-number (:dia_do_mes d)
      #(rf/dispatch [:atualizar-despesa-inline (:id d) :dia_do_mes (int %)])
@@ -358,7 +359,8 @@
 
 (defn tabela-despesas []
   (let [despesas @(rf/subscribe [:despesas-do-mes])
-        ordenadas (sort-by (fn [d] [(:forma_pagamento d) (:dia_do_mes d)]) despesas)]
+        credito   (sort-by :dia_do_mes (filter #(= (:forma_pagamento %) "credito") despesas))
+        debito    (sort-by :dia_do_mes (remove #(= (:forma_pagamento %) "credito") despesas))]
     [:section {:class "px-9 pb-6"}
      [:div {:class "flex items-center justify-between mb-3"}
       [:h2 {:class "display text-[22px]"} "Despesas do mês"]
@@ -379,11 +381,20 @@
          [:th {:class "px-4 py-3 text-center text-[11px] font-bold text-ink-2 uppercase tracking-[0.4px] w-12"} "Pago"]
          [:th {:class "w-8"}]]]
        [:tbody
+        ;; --- grupo cartão (cabeçalho = fatura-row + linhas tingidas) ---
         [fatura-row]
-        (for [d ordenadas]
+        (for [d credito]
           ^{:key (:id d)}
-          [linha-despesa d])
-        (when (empty? ordenadas)
+          [linha-despesa d true])
+        ;; --- divisor + grupo pix/débito ---
+        (when (seq debito)
+          [:tr {:class "border-t-2 border-rule" :style {:background "#F3EFE6"}}
+           [:td {:col-span 9 :class "px-4 py-2 text-[11px] font-bold uppercase tracking-[0.5px] text-ink-2"}
+            "Pix & débito"]])
+        (for [d debito]
+          ^{:key (:id d)}
+          [linha-despesa d false])
+        (when (and (empty? credito) (empty? debito))
           [:tr [:td {:col-span 9 :class "px-4 py-8 text-center text-ink-3 text-sm font-semibold"}
                 "Nenhuma despesa neste mês"]])]]]]))
 
@@ -559,61 +570,87 @@
 ;; Saldos por pessoa (todo o historico): pagou / custo / saldo mes / acumulado
 ;; =========================================================================
 
+;; Mini-grafico SVG do saldo acumulado. Escala simetrica COMPARTILHADA (M global),
+;; zero no meio — pra os 4 graficos ficarem comparaveis entre si.
+(defn grafico-saldo [serie M cor]
+  (let [W 260 H 150 n (count serie)
+        M  (max 1 M)
+        xf (fn [i] (if (<= n 1) (/ W 2) (* (/ i (dec n)) W)))
+        yf (fn [v] (- (/ H 2) (* (/ v M) (/ H 2))))
+        pts (clojure.string/join " " (map-indexed (fn [i v] (str (xf i) "," (yf v))) serie))]
+    [:svg {:viewBox (str "0 0 " W " " H) :class "w-full" :style {:height "150px"}
+           :preserveAspectRatio "none"}
+     [:line {:x1 0 :y1 (/ H 2) :x2 W :y2 (/ H 2)
+             :stroke "#E5DECF" :stroke-width 1 :stroke-dasharray "4 4"}]
+     (when (>= n 1)
+       [:polygon {:points (str "0," (/ H 2) " " pts " " W "," (/ H 2))
+                  :fill cor :fill-opacity 0.12}])
+     (when (>= n 2)
+       [:polyline {:points pts :fill "none" :stroke cor :stroke-width 2.5
+                   :vector-effect "non-scaling-stroke"}])]))
+
 (defn painel-saldos []
-  (let [resumo @(rf/subscribe [:resumo-mensal-pessoas])]
-    [:section {:class "px-9 pb-6"}
-     [:div {:class "mb-3"}
-      [:h2 {:class "display text-[22px]"} "Saldos por pessoa"]
-      [:p {:class "text-[11px] text-ink-3 font-semibold mt-0.5"}
-       "Pagou (aporte) · custo (cota) · saldo do mês · acumulado — histórico até o mês selecionado"]]
-     ;; cards de acumulado TOTAL
-     [:div {:class "grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5"}
-      (for [pid pessoas-ids]
-        (let [tot  @(rf/subscribe [:posicao-pessoa-total pid])
-              pos? (>= tot 0)]
-          ^{:key pid}
-          [:div {:class "bg-panel rounded-panel border border-rule p-5 shadow-soft"}
-           [:div {:class "flex items-center gap-2 mb-2"}
-            [c/avatar pid {:size "sm"}]
-            [:span {:class "text-[13px] font-bold text-ink"} (u/pessoa-nome pid)]]
-           [:p {:class (str "display num text-3xl leading-[1.05] " (if pos? "text-ok" "text-bad"))}
-            (str (when pos? "+") (u/formatar-valor-br tot))]
+  (let [ativo (r/atom "andre")]
+    (fn []
+      (let [resumo @(rf/subscribe [:resumo-mensal-pessoas])
+            todos  (for [l resumo p pessoas-ids] (or (get-in l [:pessoas p :acumulado]) 0))
+            M      (reduce (fn [m v] (max m (js/Math.abs v))) 1 todos)
+            pid    @ativo
+            serie  (mapv (fn [l] (or (get-in l [:pessoas pid :acumulado]) 0)) resumo)
+            cor    (u/pessoa-cor pid)
+            last-v (if (seq serie) (last serie) 0)]
+        [:section {:class "px-9 pb-6"}
+         [:div {:class "mb-3"}
+          [:h2 {:class "display text-[22px]"} "Saldos por pessoa"]
+          [:p {:class "text-[11px] text-ink-3 font-semibold mt-0.5"}
+           "Pagou · custo · saldo do mês · acumulado (histórico até o mês selecionado)"]]
+         ;; abas por pessoa
+         [:div {:class "flex gap-2 mb-4 flex-wrap"}
+          (for [p pessoas-ids]
+            ^{:key p}
+            [:button {:class    (str "px-3.5 py-1.5 rounded-pill text-[13px] font-bold transition-colors "
+                                     (if (= p pid) "text-white" "text-ink-2 bg-panel-2 hover:bg-panel"))
+                      :style    (when (= p pid) {:background-color (u/pessoa-cor p)})
+                      :on-click #(reset! ativo p)}
+             (u/pessoa-nome p)])]
+         ;; 65/35: tabela | grafico
+         [:div {:class "flex gap-4 flex-wrap items-stretch"}
+          [:div {:class "bg-panel rounded-panel border border-rule p-5 shadow-soft overflow-x-auto"
+                 :style {:flex "1 1 60%" :min-width "300px"}}
+           [:table {:class "w-full"}
+            [:thead
+             [:tr {:class "border-b border-rule"}
+              [:th {:class "px-2 py-1.5 text-left text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Mês"]
+              [:th {:class "px-2 py-1.5 text-right text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Pagou"]
+              [:th {:class "px-2 py-1.5 text-right text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Custo"]
+              [:th {:class "px-2 py-1.5 text-right text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Saldo mês"]
+              [:th {:class "px-2 py-1.5 text-right text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Acumulado"]]]
+            [:tbody
+             (for [{:keys [ano mes pessoas]} resumo]
+               (let [d (get pessoas pid)]
+                 ^{:key (str ano "-" mes)}
+                 [:tr {:class "border-t border-rule-soft"}
+                  [:td {:class "px-2 py-1.5 text-[12px] font-semibold text-ink"}
+                   (str (u/mes-nome mes) "/" (- ano 2000))]
+                  [:td {:class "px-2 py-1.5 text-right num text-[12px] text-ok font-semibold"}
+                   (u/formatar-valor-br (:aporte d))]
+                  [:td {:class "px-2 py-1.5 text-right num text-[12px] text-ink-2"}
+                   (u/formatar-valor-br (:cota d))]
+                  [:td {:class (str "px-2 py-1.5 text-right num text-[12px] font-semibold "
+                                    (if (>= (:saldo d) 0) "text-ok" "text-bad"))}
+                   (str (when (>= (:saldo d) 0) "+") (u/formatar-valor-br (:saldo d)))]
+                  [:td {:class (str "px-2 py-1.5 text-right num text-[12px] font-bold "
+                                    (if (>= (:acumulado d) 0) "text-ok" "text-bad"))}
+                   (str (when (>= (:acumulado d) 0) "+") (u/formatar-valor-br (:acumulado d)))]]))]]]
+          [:div {:class "bg-panel rounded-panel border border-rule p-5 shadow-soft flex flex-col justify-center"
+                 :style {:flex "1 1 32%" :min-width "200px"}}
+           [:p {:class "text-[10.5px] text-ink-3 font-bold uppercase tracking-[0.4px] mb-2"}
+            "Saldo acumulado"]
+           [grafico-saldo serie M cor]
+           [:p {:class (str "display num text-3xl mt-3 leading-none " (if (>= last-v 0) "text-ok" "text-bad"))}
+            (str (when (>= last-v 0) "+") (u/formatar-valor-br last-v))]
            [:p {:class "text-[11px] text-ink-3 font-semibold mt-1"}
-            (if pos? "credor (acumulado até o mês)" "devedor (acumulado até o mês)")]]))]
-     ;; tabela mensal por pessoa
-     [:div {:class "grid grid-cols-1 lg:grid-cols-2 gap-4"}
-      (for [pid pessoas-ids]
-        ^{:key pid}
-        [:div {:class "bg-panel rounded-panel border border-rule p-5 shadow-soft"}
-         [:div {:class "flex items-center gap-2 mb-3"}
-          [c/avatar pid {:size "sm"}]
-          [:span {:class "text-[14px] font-bold text-ink"} (u/pessoa-nome pid)]]
-         [:div {:class "overflow-x-auto"}
-          [:table {:class "w-full"}
-           [:thead
-            [:tr {:class "border-b border-rule"}
-             [:th {:class "px-2 py-1.5 text-left text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Mês"]
-             [:th {:class "px-2 py-1.5 text-right text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Pagou"]
-             [:th {:class "px-2 py-1.5 text-right text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Custo"]
-             [:th {:class "px-2 py-1.5 text-right text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Saldo mês"]
-             [:th {:class "px-2 py-1.5 text-right text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Acumulado"]]]
-           [:tbody
-            (for [{:keys [ano mes pessoas]} resumo]
-              (let [d (get pessoas pid)]
-                ^{:key (str ano "-" mes)}
-                [:tr {:class "border-t border-rule-soft"}
-                 [:td {:class "px-2 py-1.5 text-[12px] font-semibold text-ink"}
-                  (str (u/mes-nome mes) "/" (- ano 2000))]
-                 [:td {:class "px-2 py-1.5 text-right num text-[12px] text-ok font-semibold"}
-                  (u/formatar-valor-br (:aporte d))]
-                 [:td {:class "px-2 py-1.5 text-right num text-[12px] text-ink-2"}
-                  (u/formatar-valor-br (:cota d))]
-                 [:td {:class (str "px-2 py-1.5 text-right num text-[12px] font-semibold "
-                                   (if (>= (:saldo d) 0) "text-ok" "text-bad"))}
-                  (str (when (>= (:saldo d) 0) "+") (u/formatar-valor-br (:saldo d)))]
-                 [:td {:class (str "px-2 py-1.5 text-right num text-[12px] font-bold "
-                                   (if (>= (:acumulado d) 0) "text-ok" "text-bad"))}
-                  (str (when (>= (:acumulado d) 0) "+") (u/formatar-valor-br (:acumulado d)))]]))]]]])]]))
+            (str (if (>= last-v 0) "credor" "devedor") " · acumulado até o mês")]]]]))))
 
 ;; =========================================================================
 ;; View principal
