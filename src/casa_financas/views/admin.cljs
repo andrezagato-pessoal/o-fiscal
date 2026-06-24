@@ -209,7 +209,7 @@
       (if @editing?
         [:input {:type        "number"
                  :step        (or step "0.01")
-                 :class       (str "cell-editable w-full num text-right focus:outline-none " (or class "text-[13px]"))
+                 :class       (str "cell-editable w-full num focus:outline-none " (or class "text-[13px] text-right"))
                  :data-editing true
                  :auto-focus  true
                  :value       @novo
@@ -228,7 +228,7 @@
                                   "Escape" (do (reset! novo (str (or valor "")))
                                                (reset! editing? false))
                                   nil))}]
-        [:div {:class    (str "cell-editable num text-right " (or class "text-[13px]"))
+        [:div {:class    (str "cell-editable num " (or class "text-[13px] text-right"))
                :on-click (fn [] (reset! novo (str (or valor ""))) (reset! editing? true))}
          (if formatter (formatter valor) (str valor))]))))
 
@@ -562,7 +562,6 @@
    [:h2 {:class "display text-[22px] mb-3"} "Análise"]
    [:div {:class "grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4"}
     [card-resumo]
-    [card-pessoa-mes]
     [card-top-categorias]]
    [card-evolucao-mensal]])
 
