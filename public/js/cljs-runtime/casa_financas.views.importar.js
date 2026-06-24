@@ -42,14 +42,14 @@ return null;
 }
 });
 casa_financas.views.importar.parse_pagador = (function casa_financas$views$importar$parse_pagador(s){
-var G__26637 = clojure.string.trim(clojure.string.lower_case((function (){var or__5142__auto__ = s;
+var G__31813 = clojure.string.trim(clojure.string.lower_case((function (){var or__5142__auto__ = s;
 if(cljs.core.truth_(or__5142__auto__)){
 return or__5142__auto__;
 } else {
 return "";
 }
 })()));
-switch (G__26637) {
+switch (G__31813) {
 case "conjunta":
 return "conjunta";
 
@@ -84,14 +84,14 @@ return "conjunta";
 }
 });
 casa_financas.views.importar.parse_usuario = (function casa_financas$views$importar$parse_usuario(s){
-var G__26641 = clojure.string.trim(clojure.string.lower_case((function (){var or__5142__auto__ = s;
+var G__31814 = clojure.string.trim(clojure.string.lower_case((function (){var or__5142__auto__ = s;
 if(cljs.core.truth_(or__5142__auto__)){
 return or__5142__auto__;
 } else {
 return "";
 }
 })()));
-switch (G__26641) {
+switch (G__31814) {
 case "andre":
 return "andre";
 
@@ -148,15 +148,15 @@ return casa_financas.utils.divisao_padrao();
 });
 casa_financas.views.importar.parse_csv = (function casa_financas$views$importar$parse_csv(texto){
 var linhas = clojure.string.split_lines(clojure.string.trim(texto));
-var linhas__$1 = cljs.core.filter.cljs$core$IFn$_invoke$arity$2((function (p1__26662_SHARP_){
-return cljs.core.not_EQ_.cljs$core$IFn$_invoke$arity$2(p1__26662_SHARP_,"");
+var linhas__$1 = cljs.core.filter.cljs$core$IFn$_invoke$arity$2((function (p1__31815_SHARP_){
+return cljs.core.not_EQ_.cljs$core$IFn$_invoke$arity$2(p1__31815_SHARP_,"");
 }),linhas);
 return cljs.core.rest(linhas__$1);
 });
 casa_financas.views.importar.parse_linha_despesa = (function casa_financas$views$importar$parse_linha_despesa(linha){
 var cols = clojure.string.split.cljs$core$IFn$_invoke$arity$2(linha,/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/);
-var cols__$1 = cljs.core.mapv.cljs$core$IFn$_invoke$arity$2((function (p1__26666_SHARP_){
-return clojure.string.replace(p1__26666_SHARP_,"\"","");
+var cols__$1 = cljs.core.mapv.cljs$core$IFn$_invoke$arity$2((function (p1__31816_SHARP_){
+return clojure.string.replace(p1__31816_SHARP_,"\"","");
 }),cols);
 var data_str = casa_financas.views.importar.parse_data(cljs.core.get.cljs$core$IFn$_invoke$arity$2(cols__$1,(0)));
 var data_map = casa_financas.views.importar.parse_mes_ano(data_str);
@@ -174,8 +174,8 @@ return null;
 });
 casa_financas.views.importar.parse_linha_entrada = (function casa_financas$views$importar$parse_linha_entrada(linha){
 var cols = clojure.string.split.cljs$core$IFn$_invoke$arity$2(linha,/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/);
-var cols__$1 = cljs.core.mapv.cljs$core$IFn$_invoke$arity$2((function (p1__26670_SHARP_){
-return clojure.string.replace(p1__26670_SHARP_,"\"","");
+var cols__$1 = cljs.core.mapv.cljs$core$IFn$_invoke$arity$2((function (p1__31817_SHARP_){
+return clojure.string.replace(p1__31817_SHARP_,"\"","");
 }),cols);
 var data_str = casa_financas.views.importar.parse_data(cljs.core.get.cljs$core$IFn$_invoke$arity$2(cols__$1,(0)));
 if(cljs.core.truth_(data_str)){
@@ -185,25 +185,25 @@ return null;
 }
 });
 casa_financas.views.importar.tabela_preview_despesas = (function casa_financas$views$importar$tabela_preview_despesas(despesas){
-return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"overflow-x-auto"], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"table","table",-564943036),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"w-full text-xs"], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"thead","thead",-291875296),new cljs.core.PersistentVector(null, 6, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tr","tr",-1424774646),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"border-b border-gray-200"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"th","th",-545608566),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-left py-1.5 text-gray-500 font-medium"], null),"Data"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"th","th",-545608566),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-left py-1.5 text-gray-500 font-medium"], null),"Descri\u00E7\u00E3o"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"th","th",-545608566),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-right py-1.5 text-gray-500 font-medium"], null),"Valor"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"th","th",-545608566),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-center py-1.5 text-gray-500 font-medium"], null),"Pago"], null)], null)], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tbody","tbody",-80678300),(function (){var iter__5628__auto__ = (function casa_financas$views$importar$tabela_preview_despesas_$_iter__26679(s__26680){
+return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"overflow-x-auto"], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"table","table",-564943036),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"w-full text-xs"], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"thead","thead",-291875296),new cljs.core.PersistentVector(null, 6, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tr","tr",-1424774646),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"border-b border-rule"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"th","th",-545608566),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-left py-1.5 text-ink-2 font-medium"], null),"Data"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"th","th",-545608566),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-left py-1.5 text-ink-2 font-medium"], null),"Descri\u00E7\u00E3o"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"th","th",-545608566),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-right py-1.5 text-ink-2 font-medium"], null),"Valor"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"th","th",-545608566),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-center py-1.5 text-ink-2 font-medium"], null),"Pago"], null)], null)], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tbody","tbody",-80678300),(function (){var iter__5628__auto__ = (function casa_financas$views$importar$tabela_preview_despesas_$_iter__31818(s__31819){
 return (new cljs.core.LazySeq(null,(function (){
-var s__26680__$1 = s__26680;
+var s__31819__$1 = s__31819;
 while(true){
-var temp__5823__auto__ = cljs.core.seq(s__26680__$1);
+var temp__5823__auto__ = cljs.core.seq(s__31819__$1);
 if(temp__5823__auto__){
-var s__26680__$2 = temp__5823__auto__;
-if(cljs.core.chunked_seq_QMARK_(s__26680__$2)){
-var c__5626__auto__ = cljs.core.chunk_first(s__26680__$2);
+var s__31819__$2 = temp__5823__auto__;
+if(cljs.core.chunked_seq_QMARK_(s__31819__$2)){
+var c__5626__auto__ = cljs.core.chunk_first(s__31819__$2);
 var size__5627__auto__ = cljs.core.count(c__5626__auto__);
-var b__26682 = cljs.core.chunk_buffer(size__5627__auto__);
-if((function (){var i__26681 = (0);
+var b__31821 = cljs.core.chunk_buffer(size__5627__auto__);
+if((function (){var i__31820 = (0);
 while(true){
-if((i__26681 < size__5627__auto__)){
-var d = cljs.core._nth(c__5626__auto__,i__26681);
-cljs.core.chunk_append(b__26682,cljs.core.with_meta(new cljs.core.PersistentVector(null, 6, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tr","tr",-1424774646),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"border-b border-gray-50"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-gray-600"], null),(""+cljs.core.str.cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"dia_do_mes","dia_do_mes",-485165205).cljs$core$IFn$_invoke$arity$1(d))+"/"+cljs.core.str.cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"mes","mes",-890288111).cljs$core$IFn$_invoke$arity$1(d))+"/"+cljs.core.str.cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"ano","ano",109602792).cljs$core$IFn$_invoke$arity$1(d)))], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-gray-800 max-w-24 truncate"], null),new cljs.core.Keyword(null,"descricao","descricao",861900814).cljs$core$IFn$_invoke$arity$1(d)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-right text-gray-800"], null),casa_financas.utils.formatar_valor_br(new cljs.core.Keyword(null,"valor","valor",-957162173).cljs$core$IFn$_invoke$arity$1(d))], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-center"], null),(cljs.core.truth_(new cljs.core.Keyword(null,"pago","pago",27952415).cljs$core$IFn$_invoke$arity$1(d))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-green-500"], null),"\u2713"], null):new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-gray-300"], null),"\u2013"], null))], null)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(d)], null)));
+if((i__31820 < size__5627__auto__)){
+var d = cljs.core._nth(c__5626__auto__,i__31820);
+cljs.core.chunk_append(b__31821,cljs.core.with_meta(new cljs.core.PersistentVector(null, 6, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tr","tr",-1424774646),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"border-b border-rule-soft"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-ink-2"], null),(""+cljs.core.str.cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"dia_do_mes","dia_do_mes",-485165205).cljs$core$IFn$_invoke$arity$1(d))+"/"+cljs.core.str.cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"mes","mes",-890288111).cljs$core$IFn$_invoke$arity$1(d))+"/"+cljs.core.str.cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"ano","ano",109602792).cljs$core$IFn$_invoke$arity$1(d)))], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-ink max-w-24 truncate"], null),new cljs.core.Keyword(null,"descricao","descricao",861900814).cljs$core$IFn$_invoke$arity$1(d)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-right text-ink"], null),casa_financas.utils.formatar_valor_br(new cljs.core.Keyword(null,"valor","valor",-957162173).cljs$core$IFn$_invoke$arity$1(d))], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-center"], null),(cljs.core.truth_(new cljs.core.Keyword(null,"pago","pago",27952415).cljs$core$IFn$_invoke$arity$1(d))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-ok"], null),"\u2713"], null):new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-ink-3"], null),"\u2013"], null))], null)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(d)], null)));
 
-var G__26731 = (i__26681 + (1));
-i__26681 = G__26731;
+var G__31833 = (i__31820 + (1));
+i__31820 = G__31833;
 continue;
 } else {
 return true;
@@ -211,13 +211,13 @@ return true;
 break;
 }
 })()){
-return cljs.core.chunk_cons(cljs.core.chunk(b__26682),casa_financas$views$importar$tabela_preview_despesas_$_iter__26679(cljs.core.chunk_rest(s__26680__$2)));
+return cljs.core.chunk_cons(cljs.core.chunk(b__31821),casa_financas$views$importar$tabela_preview_despesas_$_iter__31818(cljs.core.chunk_rest(s__31819__$2)));
 } else {
-return cljs.core.chunk_cons(cljs.core.chunk(b__26682),null);
+return cljs.core.chunk_cons(cljs.core.chunk(b__31821),null);
 }
 } else {
-var d = cljs.core.first(s__26680__$2);
-return cljs.core.cons(cljs.core.with_meta(new cljs.core.PersistentVector(null, 6, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tr","tr",-1424774646),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"border-b border-gray-50"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-gray-600"], null),(""+cljs.core.str.cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"dia_do_mes","dia_do_mes",-485165205).cljs$core$IFn$_invoke$arity$1(d))+"/"+cljs.core.str.cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"mes","mes",-890288111).cljs$core$IFn$_invoke$arity$1(d))+"/"+cljs.core.str.cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"ano","ano",109602792).cljs$core$IFn$_invoke$arity$1(d)))], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-gray-800 max-w-24 truncate"], null),new cljs.core.Keyword(null,"descricao","descricao",861900814).cljs$core$IFn$_invoke$arity$1(d)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-right text-gray-800"], null),casa_financas.utils.formatar_valor_br(new cljs.core.Keyword(null,"valor","valor",-957162173).cljs$core$IFn$_invoke$arity$1(d))], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-center"], null),(cljs.core.truth_(new cljs.core.Keyword(null,"pago","pago",27952415).cljs$core$IFn$_invoke$arity$1(d))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-green-500"], null),"\u2713"], null):new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-gray-300"], null),"\u2013"], null))], null)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(d)], null)),casa_financas$views$importar$tabela_preview_despesas_$_iter__26679(cljs.core.rest(s__26680__$2)));
+var d = cljs.core.first(s__31819__$2);
+return cljs.core.cons(cljs.core.with_meta(new cljs.core.PersistentVector(null, 6, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tr","tr",-1424774646),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"border-b border-rule-soft"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-ink-2"], null),(""+cljs.core.str.cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"dia_do_mes","dia_do_mes",-485165205).cljs$core$IFn$_invoke$arity$1(d))+"/"+cljs.core.str.cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"mes","mes",-890288111).cljs$core$IFn$_invoke$arity$1(d))+"/"+cljs.core.str.cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"ano","ano",109602792).cljs$core$IFn$_invoke$arity$1(d)))], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-ink max-w-24 truncate"], null),new cljs.core.Keyword(null,"descricao","descricao",861900814).cljs$core$IFn$_invoke$arity$1(d)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-right text-ink"], null),casa_financas.utils.formatar_valor_br(new cljs.core.Keyword(null,"valor","valor",-957162173).cljs$core$IFn$_invoke$arity$1(d))], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-center"], null),(cljs.core.truth_(new cljs.core.Keyword(null,"pago","pago",27952415).cljs$core$IFn$_invoke$arity$1(d))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-ok"], null),"\u2713"], null):new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-ink-3"], null),"\u2013"], null))], null)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(d)], null)),casa_financas$views$importar$tabela_preview_despesas_$_iter__31818(cljs.core.rest(s__31819__$2)));
 }
 } else {
 return null;
@@ -230,25 +230,25 @@ return iter__5628__auto__(despesas);
 })()], null)], null)], null);
 });
 casa_financas.views.importar.tabela_preview_entradas = (function casa_financas$views$importar$tabela_preview_entradas(entradas){
-return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"overflow-x-auto"], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"table","table",-564943036),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"w-full text-xs"], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"thead","thead",-291875296),new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tr","tr",-1424774646),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"border-b border-gray-200"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"th","th",-545608566),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-left py-1.5 text-gray-500 font-medium"], null),"Data"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"th","th",-545608566),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-left py-1.5 text-gray-500 font-medium"], null),"Pessoa"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"th","th",-545608566),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-right py-1.5 text-gray-500 font-medium"], null),"Valor"], null)], null)], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tbody","tbody",-80678300),(function (){var iter__5628__auto__ = (function casa_financas$views$importar$tabela_preview_entradas_$_iter__26694(s__26695){
+return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"overflow-x-auto"], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"table","table",-564943036),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"w-full text-xs"], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"thead","thead",-291875296),new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tr","tr",-1424774646),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"border-b border-rule"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"th","th",-545608566),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-left py-1.5 text-ink-2 font-medium"], null),"Data"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"th","th",-545608566),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-left py-1.5 text-ink-2 font-medium"], null),"Pessoa"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"th","th",-545608566),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-right py-1.5 text-ink-2 font-medium"], null),"Valor"], null)], null)], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tbody","tbody",-80678300),(function (){var iter__5628__auto__ = (function casa_financas$views$importar$tabela_preview_entradas_$_iter__31822(s__31823){
 return (new cljs.core.LazySeq(null,(function (){
-var s__26695__$1 = s__26695;
+var s__31823__$1 = s__31823;
 while(true){
-var temp__5823__auto__ = cljs.core.seq(s__26695__$1);
+var temp__5823__auto__ = cljs.core.seq(s__31823__$1);
 if(temp__5823__auto__){
-var s__26695__$2 = temp__5823__auto__;
-if(cljs.core.chunked_seq_QMARK_(s__26695__$2)){
-var c__5626__auto__ = cljs.core.chunk_first(s__26695__$2);
+var s__31823__$2 = temp__5823__auto__;
+if(cljs.core.chunked_seq_QMARK_(s__31823__$2)){
+var c__5626__auto__ = cljs.core.chunk_first(s__31823__$2);
 var size__5627__auto__ = cljs.core.count(c__5626__auto__);
-var b__26697 = cljs.core.chunk_buffer(size__5627__auto__);
-if((function (){var i__26696 = (0);
+var b__31825 = cljs.core.chunk_buffer(size__5627__auto__);
+if((function (){var i__31824 = (0);
 while(true){
-if((i__26696 < size__5627__auto__)){
-var e = cljs.core._nth(c__5626__auto__,i__26696);
-cljs.core.chunk_append(b__26697,cljs.core.with_meta(new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tr","tr",-1424774646),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"border-b border-gray-50"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-gray-600"], null),new cljs.core.Keyword(null,"data","data",-232669377).cljs$core$IFn$_invoke$arity$1(e)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5"], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [casa_financas.components.comum.chip_pessoa,new cljs.core.Keyword(null,"pessoa_id","pessoa_id",-1264984672).cljs$core$IFn$_invoke$arity$1(e)], null)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-right text-green-600 font-medium"], null),casa_financas.utils.formatar_valor_br(new cljs.core.Keyword(null,"valor","valor",-957162173).cljs$core$IFn$_invoke$arity$1(e))], null)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(e)], null)));
+if((i__31824 < size__5627__auto__)){
+var e = cljs.core._nth(c__5626__auto__,i__31824);
+cljs.core.chunk_append(b__31825,cljs.core.with_meta(new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tr","tr",-1424774646),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"border-b border-rule-soft"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-ink-2"], null),new cljs.core.Keyword(null,"data","data",-232669377).cljs$core$IFn$_invoke$arity$1(e)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5"], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [casa_financas.components.comum.chip_pessoa,new cljs.core.Keyword(null,"pessoa_id","pessoa_id",-1264984672).cljs$core$IFn$_invoke$arity$1(e)], null)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-right text-ok font-medium"], null),casa_financas.utils.formatar_valor_br(new cljs.core.Keyword(null,"valor","valor",-957162173).cljs$core$IFn$_invoke$arity$1(e))], null)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(e)], null)));
 
-var G__26736 = (i__26696 + (1));
-i__26696 = G__26736;
+var G__31834 = (i__31824 + (1));
+i__31824 = G__31834;
 continue;
 } else {
 return true;
@@ -256,13 +256,13 @@ return true;
 break;
 }
 })()){
-return cljs.core.chunk_cons(cljs.core.chunk(b__26697),casa_financas$views$importar$tabela_preview_entradas_$_iter__26694(cljs.core.chunk_rest(s__26695__$2)));
+return cljs.core.chunk_cons(cljs.core.chunk(b__31825),casa_financas$views$importar$tabela_preview_entradas_$_iter__31822(cljs.core.chunk_rest(s__31823__$2)));
 } else {
-return cljs.core.chunk_cons(cljs.core.chunk(b__26697),null);
+return cljs.core.chunk_cons(cljs.core.chunk(b__31825),null);
 }
 } else {
-var e = cljs.core.first(s__26695__$2);
-return cljs.core.cons(cljs.core.with_meta(new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tr","tr",-1424774646),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"border-b border-gray-50"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-gray-600"], null),new cljs.core.Keyword(null,"data","data",-232669377).cljs$core$IFn$_invoke$arity$1(e)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5"], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [casa_financas.components.comum.chip_pessoa,new cljs.core.Keyword(null,"pessoa_id","pessoa_id",-1264984672).cljs$core$IFn$_invoke$arity$1(e)], null)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-right text-green-600 font-medium"], null),casa_financas.utils.formatar_valor_br(new cljs.core.Keyword(null,"valor","valor",-957162173).cljs$core$IFn$_invoke$arity$1(e))], null)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(e)], null)),casa_financas$views$importar$tabela_preview_entradas_$_iter__26694(cljs.core.rest(s__26695__$2)));
+var e = cljs.core.first(s__31823__$2);
+return cljs.core.cons(cljs.core.with_meta(new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tr","tr",-1424774646),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"border-b border-rule-soft"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-ink-2"], null),new cljs.core.Keyword(null,"data","data",-232669377).cljs$core$IFn$_invoke$arity$1(e)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5"], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [casa_financas.components.comum.chip_pessoa,new cljs.core.Keyword(null,"pessoa_id","pessoa_id",-1264984672).cljs$core$IFn$_invoke$arity$1(e)], null)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"py-1.5 text-right text-ok font-medium"], null),casa_financas.utils.formatar_valor_br(new cljs.core.Keyword(null,"valor","valor",-957162173).cljs$core$IFn$_invoke$arity$1(e))], null)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(e)], null)),casa_financas$views$importar$tabela_preview_entradas_$_iter__31822(cljs.core.rest(s__31823__$2)));
 }
 } else {
 return null;
@@ -281,7 +281,7 @@ var preview = reagent.core.atom.cljs$core$IFn$_invoke$arity$1(null);
 var importando = reagent.core.atom.cljs$core$IFn$_invoke$arity$1(false);
 var importado = reagent.core.atom.cljs$core$IFn$_invoke$arity$1(false);
 return (function (){
-return new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"flex flex-col pb-24"], null),new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [casa_financas.components.comum.seletor_mes], null),new cljs.core.PersistentVector(null, 7, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"p-3 space-y-3"], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"bg-white rounded-2xl p-4 border border-gray-100 shadow-sm"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h2","h2",-372662728),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"font-bold text-gray-800 mb-1"], null),"Importar do CSV"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"p","p",151049309),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-xs text-gray-500"], null),"Cole o conte\u00FAdo do CSV exportado do Google Sheets. Inclua o cabe\u00E7alho."], null)], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"flex gap-2 p-1.5 bg-white rounded-2xl border border-gray-100 shadow-sm"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"button","button",1456579943),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"class","class",-2030961996),(""+"flex-1 py-1.5 rounded-xl text-sm font-medium transition-colors "+cljs.core.str.cljs$core$IFn$_invoke$arity$1(((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.deref(aba),new cljs.core.Keyword(null,"despesas","despesas",786163068)))?"bg-blue-500 text-white":"text-gray-500"))),new cljs.core.Keyword(null,"on-click","on-click",1632826543),(function (){
+return new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"flex flex-col pb-24"], null),new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [casa_financas.components.comum.seletor_mes], null),new cljs.core.PersistentVector(null, 7, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"p-3 space-y-3"], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"bg-panel rounded-panel p-4 border border-rule-soft shadow-sm"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h2","h2",-372662728),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"font-bold text-ink mb-1"], null),"Importar do CSV"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"p","p",151049309),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-xs text-ink-2"], null),"Cole o conte\u00FAdo do CSV exportado do Google Sheets. Inclua o cabe\u00E7alho."], null)], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"flex gap-2 p-1.5 bg-panel rounded-panel border border-rule-soft shadow-sm"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"button","button",1456579943),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"class","class",-2030961996),(""+"flex-1 py-1.5 rounded-panel text-sm font-medium transition-colors "+cljs.core.str.cljs$core$IFn$_invoke$arity$1(((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.deref(aba),new cljs.core.Keyword(null,"despesas","despesas",786163068)))?"bg-ink text-cream":"text-ink-2"))),new cljs.core.Keyword(null,"on-click","on-click",1632826543),(function (){
 cljs.core.reset_BANG_(aba,new cljs.core.Keyword(null,"despesas","despesas",786163068));
 
 cljs.core.reset_BANG_(preview,null);
@@ -289,7 +289,7 @@ cljs.core.reset_BANG_(preview,null);
 cljs.core.reset_BANG_(csv_texto,"");
 
 return cljs.core.reset_BANG_(importado,false);
-})], null),"\uD83D\uDCB8 Despesas"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"button","button",1456579943),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"class","class",-2030961996),(""+"flex-1 py-1.5 rounded-xl text-sm font-medium transition-colors "+cljs.core.str.cljs$core$IFn$_invoke$arity$1(((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.deref(aba),new cljs.core.Keyword(null,"entradas","entradas",-1856269220)))?"bg-blue-500 text-white":"text-gray-500"))),new cljs.core.Keyword(null,"on-click","on-click",1632826543),(function (){
+})], null),"\uD83D\uDCB8 Despesas"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"button","button",1456579943),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"class","class",-2030961996),(""+"flex-1 py-1.5 rounded-panel text-sm font-medium transition-colors "+cljs.core.str.cljs$core$IFn$_invoke$arity$1(((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.deref(aba),new cljs.core.Keyword(null,"entradas","entradas",-1856269220)))?"bg-ink text-cream":"text-ink-2"))),new cljs.core.Keyword(null,"on-click","on-click",1632826543),(function (){
 cljs.core.reset_BANG_(aba,new cljs.core.Keyword(null,"entradas","entradas",-1856269220));
 
 cljs.core.reset_BANG_(preview,null);
@@ -297,8 +297,8 @@ cljs.core.reset_BANG_(preview,null);
 cljs.core.reset_BANG_(csv_texto,"");
 
 return cljs.core.reset_BANG_(importado,false);
-})], null),"\uD83D\uDCB0 Entradas"], null)], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"bg-white rounded-2xl border border-gray-100 shadow-sm p-3"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"label","label",1718410804),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-xs font-medium text-gray-500 mb-1.5 block"], null),((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.deref(aba),new cljs.core.Keyword(null,"despesas","despesas",786163068)))?"Cole o CSV de Despesas aqui:":"Cole o CSV de Entradas aqui:")], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"textarea","textarea",-650375824),new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"class","class",-2030961996),"w-full h-32 border border-gray-200 rounded-xl px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none",new cljs.core.Keyword(null,"placeholder","placeholder",-104873083),((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.deref(aba),new cljs.core.Keyword(null,"despesas","despesas",786163068)))?"Gastos,Descri\u00E7\u00E3o,Valor,M\u00E9todo,Pago Por,Forma de Divis\u00E3o,Quitado\n23/02/2026,Mercado,\"R$ 150,00\",Cr\u00E9dito,Conjunta,25/25/25/25,":"Entradas,Usu\u00E1rio,Valor\n05/02/2026,Andre,\"R$ 3.000,00\""),new cljs.core.Keyword(null,"value","value",305978217),cljs.core.deref(csv_texto),new cljs.core.Keyword(null,"on-change","on-change",-732046149),(function (p1__26698_SHARP_){
-cljs.core.reset_BANG_(csv_texto,p1__26698_SHARP_.target.value);
+})], null),"\uD83D\uDCB0 Entradas"], null)], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"bg-panel rounded-panel border border-rule-soft shadow-sm p-3"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"label","label",1718410804),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-xs font-medium text-ink-2 mb-1.5 block"], null),((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.deref(aba),new cljs.core.Keyword(null,"despesas","despesas",786163068)))?"Cole o CSV de Despesas aqui:":"Cole o CSV de Entradas aqui:")], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"textarea","textarea",-650375824),new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"class","class",-2030961996),"w-full h-32 border border-rule rounded-panel px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none",new cljs.core.Keyword(null,"placeholder","placeholder",-104873083),((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.deref(aba),new cljs.core.Keyword(null,"despesas","despesas",786163068)))?"Gastos,Descri\u00E7\u00E3o,Valor,M\u00E9todo,Pago Por,Forma de Divis\u00E3o,Quitado\n23/02/2026,Mercado,\"R$ 150,00\",Cr\u00E9dito,Conjunta,25/25/25/25,":"Entradas,Usu\u00E1rio,Valor\n05/02/2026,Andre,\"R$ 3.000,00\""),new cljs.core.Keyword(null,"value","value",305978217),cljs.core.deref(csv_texto),new cljs.core.Keyword(null,"on-change","on-change",-732046149),(function (p1__31826_SHARP_){
+cljs.core.reset_BANG_(csv_texto,p1__31826_SHARP_.target.value);
 
 cljs.core.reset_BANG_(preview,null);
 
@@ -307,66 +307,66 @@ return cljs.core.reset_BANG_(importado,false);
 var linhas = casa_financas.views.importar.parse_csv(cljs.core.deref(csv_texto));
 var parsed = ((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.deref(aba),new cljs.core.Keyword(null,"despesas","despesas",786163068)))?cljs.core.filterv(cljs.core.some_QMARK_,cljs.core.mapv.cljs$core$IFn$_invoke$arity$2(casa_financas.views.importar.parse_linha_despesa,linhas)):cljs.core.filterv(cljs.core.some_QMARK_,cljs.core.mapv.cljs$core$IFn$_invoke$arity$2(casa_financas.views.importar.parse_linha_entrada,linhas)));
 return cljs.core.reset_BANG_(preview,parsed);
-}),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),""], null)], null):null),(cljs.core.truth_(cljs.core.deref(preview))?new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"bg-white rounded-2xl border border-gray-100 shadow-sm p-3"], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"flex justify-between items-center mb-2"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"p","p",151049309),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-xs font-medium text-gray-600"], null),(""+cljs.core.str.cljs$core$IFn$_invoke$arity$1(cljs.core.count(cljs.core.deref(preview)))+" registros encontrados")], null),(cljs.core.truth_(cljs.core.deref(importado))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-xs text-green-600 font-medium"], null),"\u2713 Importado!"], null):null)], null),((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.deref(aba),new cljs.core.Keyword(null,"despesas","despesas",786163068)))?new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [casa_financas.views.importar.tabela_preview_despesas,cljs.core.deref(preview)], null):new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [casa_financas.views.importar.tabela_preview_entradas,cljs.core.deref(preview)], null)),((((cljs.core.seq(cljs.core.deref(preview))) && (cljs.core.not(cljs.core.deref(importado)))))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"mt-3"], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [casa_financas.components.comum.botao_primario,(cljs.core.truth_(cljs.core.deref(importando))?"Importando...":(""+"\u2B06 Importar "+cljs.core.str.cljs$core$IFn$_invoke$arity$1(cljs.core.count(cljs.core.deref(preview)))+" registros")),(function (){var tipo = cljs.core.deref(aba);
+}),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),""], null)], null):null),(cljs.core.truth_(cljs.core.deref(preview))?new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"bg-panel rounded-panel border border-rule-soft shadow-sm p-3"], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"flex justify-between items-center mb-2"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"p","p",151049309),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-xs font-medium text-ink-2"], null),(""+cljs.core.str.cljs$core$IFn$_invoke$arity$1(cljs.core.count(cljs.core.deref(preview)))+" registros encontrados")], null),(cljs.core.truth_(cljs.core.deref(importado))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"text-xs text-ok font-medium"], null),"\u2713 Importado!"], null):null)], null),((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.deref(aba),new cljs.core.Keyword(null,"despesas","despesas",786163068)))?new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [casa_financas.views.importar.tabela_preview_despesas,cljs.core.deref(preview)], null):new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [casa_financas.views.importar.tabela_preview_entradas,cljs.core.deref(preview)], null)),((((cljs.core.seq(cljs.core.deref(preview))) && (cljs.core.not(cljs.core.deref(importado)))))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"mt-3"], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [casa_financas.components.comum.botao_primario,(cljs.core.truth_(cljs.core.deref(importando))?"Importando...":(""+"\u2B06 Importar "+cljs.core.str.cljs$core$IFn$_invoke$arity$1(cljs.core.count(cljs.core.deref(preview)))+" registros")),(function (){var tipo = cljs.core.deref(aba);
 return (function (){
 if(cljs.core.not(cljs.core.deref(importando))){
 cljs.core.reset_BANG_(importando,true);
 
-var seq__26707_26739 = cljs.core.seq(cljs.core.deref(preview));
-var chunk__26708_26740 = null;
-var count__26709_26741 = (0);
-var i__26710_26742 = (0);
+var seq__31827_31835 = cljs.core.seq(cljs.core.deref(preview));
+var chunk__31828_31836 = null;
+var count__31829_31837 = (0);
+var i__31830_31838 = (0);
 while(true){
-if((i__26710_26742 < count__26709_26741)){
-var item_26743 = chunk__26708_26740.cljs$core$IIndexed$_nth$arity$2(null,i__26710_26742);
+if((i__31830_31838 < count__31829_31837)){
+var item_31839 = chunk__31828_31836.cljs$core$IIndexed$_nth$arity$2(null,i__31830_31838);
 if(cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(tipo,new cljs.core.Keyword(null,"despesas","despesas",786163068))){
-re_frame.core.dispatch(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"salvar-despesa","salvar-despesa",1552836062),item_26743], null));
+re_frame.core.dispatch(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"salvar-despesa","salvar-despesa",1552836062),item_31839], null));
 } else {
-re_frame.core.dispatch(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"salvar-entrada","salvar-entrada",486272064),item_26743], null));
+re_frame.core.dispatch(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"salvar-entrada","salvar-entrada",486272064),item_31839], null));
 }
 
 
-var G__26744 = seq__26707_26739;
-var G__26745 = chunk__26708_26740;
-var G__26746 = count__26709_26741;
-var G__26747 = (i__26710_26742 + (1));
-seq__26707_26739 = G__26744;
-chunk__26708_26740 = G__26745;
-count__26709_26741 = G__26746;
-i__26710_26742 = G__26747;
+var G__31840 = seq__31827_31835;
+var G__31841 = chunk__31828_31836;
+var G__31842 = count__31829_31837;
+var G__31843 = (i__31830_31838 + (1));
+seq__31827_31835 = G__31840;
+chunk__31828_31836 = G__31841;
+count__31829_31837 = G__31842;
+i__31830_31838 = G__31843;
 continue;
 } else {
-var temp__5823__auto___26748 = cljs.core.seq(seq__26707_26739);
-if(temp__5823__auto___26748){
-var seq__26707_26749__$1 = temp__5823__auto___26748;
-if(cljs.core.chunked_seq_QMARK_(seq__26707_26749__$1)){
-var c__5673__auto___26750 = cljs.core.chunk_first(seq__26707_26749__$1);
-var G__26751 = cljs.core.chunk_rest(seq__26707_26749__$1);
-var G__26752 = c__5673__auto___26750;
-var G__26753 = cljs.core.count(c__5673__auto___26750);
-var G__26754 = (0);
-seq__26707_26739 = G__26751;
-chunk__26708_26740 = G__26752;
-count__26709_26741 = G__26753;
-i__26710_26742 = G__26754;
+var temp__5823__auto___31844 = cljs.core.seq(seq__31827_31835);
+if(temp__5823__auto___31844){
+var seq__31827_31845__$1 = temp__5823__auto___31844;
+if(cljs.core.chunked_seq_QMARK_(seq__31827_31845__$1)){
+var c__5673__auto___31846 = cljs.core.chunk_first(seq__31827_31845__$1);
+var G__31847 = cljs.core.chunk_rest(seq__31827_31845__$1);
+var G__31848 = c__5673__auto___31846;
+var G__31849 = cljs.core.count(c__5673__auto___31846);
+var G__31850 = (0);
+seq__31827_31835 = G__31847;
+chunk__31828_31836 = G__31848;
+count__31829_31837 = G__31849;
+i__31830_31838 = G__31850;
 continue;
 } else {
-var item_26755 = cljs.core.first(seq__26707_26749__$1);
+var item_31851 = cljs.core.first(seq__31827_31845__$1);
 if(cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(tipo,new cljs.core.Keyword(null,"despesas","despesas",786163068))){
-re_frame.core.dispatch(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"salvar-despesa","salvar-despesa",1552836062),item_26755], null));
+re_frame.core.dispatch(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"salvar-despesa","salvar-despesa",1552836062),item_31851], null));
 } else {
-re_frame.core.dispatch(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"salvar-entrada","salvar-entrada",486272064),item_26755], null));
+re_frame.core.dispatch(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"salvar-entrada","salvar-entrada",486272064),item_31851], null));
 }
 
 
-var G__26756 = cljs.core.next(seq__26707_26749__$1);
-var G__26757 = null;
-var G__26758 = (0);
-var G__26759 = (0);
-seq__26707_26739 = G__26756;
-chunk__26708_26740 = G__26757;
-count__26709_26741 = G__26758;
-i__26710_26742 = G__26759;
+var G__31852 = cljs.core.next(seq__31827_31845__$1);
+var G__31853 = null;
+var G__31854 = (0);
+var G__31855 = (0);
+seq__31827_31835 = G__31852;
+chunk__31828_31836 = G__31853;
+count__31829_31837 = G__31854;
+i__31830_31838 = G__31855;
 continue;
 }
 } else {
