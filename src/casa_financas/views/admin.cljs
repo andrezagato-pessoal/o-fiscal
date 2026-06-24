@@ -59,18 +59,18 @@
        [c/label (str (u/mes-nome (:mes mes-atual)) " em andamento")]
        [:div {:class "flex items-baseline gap-3 mt-2.5"}
         [:span {:class "display num text-[64px] leading-none"}
-         (u/formatar-valor-br total-pago)]
+         (u/formatar-valor-br total-prev)]
         [:span {:class "num text-lg text-ink-2 font-semibold"}
-         (str "de " (u/formatar-valor-br total-prev))]]
+         "previsto"]]
        [:p {:class "text-[11px] text-ink-3 font-semibold mt-1.5"}
-        (str "pago até hoje · " (Math/round pct) "% das despesas previstas")]
+        (str (Math/round pct) "% já pago neste mês")]
        ;; Progresso
        [:div {:class "mt-6"}
         [:div {:class "h-2.5 bg-panel-2 rounded-pill overflow-hidden"}
          [:div {:class "h-full rounded-pill"
                 :style {:width      (str pct "%")
                         :background "linear-gradient(90deg, #231C12 0%, #E97A3F 100%)"}}]]
-        [:div {:class "flex justify-between mt-2 num text-[11.5px] text-ink-3 font-semibold"}
+        [:div {:class "flex justify-between mt-2 num text-[13px] text-ink-2 font-bold"}
          [:span (str "pago " (u/formatar-valor-br total-pago))]
          [:span (str "a pagar " (u/formatar-valor-br (- total-prev total-pago)))]]]
        ;; Status pills
@@ -104,39 +104,29 @@
           {:formatter u/formatar-valor-br}]]
         [:p {:class "text-[11px] text-ink-3 font-semibold mt-1"}
          "atualizado manualmente · clique para editar"]]
-       ;; Cartão em aberto (warm)
+       ;; Cartão deste mês (warm)
        [:div {:class "rounded-panel p-5"
               :style {:background "#FFF1E5" :border "1.5px solid #F5DDC2"}}
         [:div {:class "flex items-center gap-2 mb-2"}
          [:span {:class "w-2.5 h-2.5 rounded-full" :style {:background "#E97A3F"}}]
          [:span {:class "text-[10.5px] font-bold uppercase tracking-[0.5px]" :style {:color "#7A4F1F"}}
-          "Cartão em aberto"]]
+          "Cartão deste mês"]]
         [:div {:class "display num text-4xl" :style {:color "#7A4F1F"}}
-         (u/formatar-valor-br rabo)]
+         (u/formatar-valor-br @(rf/subscribe [:total-credito-mes]))]
         [:p {:class "text-[11px] font-semibold mt-1" :style {:color "#9A6B3A"}}
-         "rabo acumulado de meses anteriores"]]
-       ;; Em déficit
-       (when (seq devedores)
-         [:div {:class "rounded-panel border border-rule bg-panel p-5 shadow-soft"}
-          [:div {:class "flex items-center gap-2 mb-2"}
-           [:span {:class "w-2.5 h-2.5 rounded-full bg-bad"}]
-           [c/label "Em déficit"]
-           [:span {:class "ml-auto inline-flex items-center px-2 py-0.5 rounded-pill text-[10.5px] font-bold text-bad"
-                   :style {:background "#FBEEEE"}}
-            (str (count devedores) " pessoa" (when (> (count devedores) 1) "s"))]]
-          [:div {:class "display num text-4xl text-bad"}
-           (u/formatar-valor-br deficit-tot)]
-          [:p {:class "text-[11px] text-ink-3 font-semibold mt-1"}
-           "aporte abaixo da cota justa"]])]]]))
+         "compras e parcelas na fatura do mês"]]]]]))
 
 ;; =========================================================================
 ;; Posição acumulada
 ;; =========================================================================
 
-(defn card-posicao [pessoa-id]
-  (let [pos       @(rf/subscribe [:posicao-pessoa-ano pessoa-id])
-        cor       (u/pessoa-cor pessoa-id)
-        positivo? (>= pos 0)]
+(defn card-posicao [pessoa-id dados]
+  (let [cor       (u/pessoa-cor pessoa-id)
+        aporte    (or (:aporte dados) 0)
+        cota      (or (:cota dados) 0)
+        saldo-mes (or (:saldo dados) 0)
+        acum      (or (:acumulado dados) 0)
+        positivo? (>= acum 0)]
     [:div {:class "bg-panel rounded-panel border border-rule p-5 shadow-soft"}
      [:div {:class "flex items-center gap-3 mb-3"}
       [:div {:class "w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-base"
@@ -148,22 +138,37 @@
                            (if positivo? "text-ok" "text-bad"))
                :style {:background (if positivo? "#EBF5EF" "#FBEEEE")}}
         (if positivo? "✓ credor" "⚠ devedor")]]]
+     ;; saldo acumulado (carrega historico)
      [:p {:class (str "display num text-3xl leading-[1.05] " (if positivo? "text-ok" "text-bad"))}
-      (str (when positivo? "+") (u/formatar-valor-br pos))]
+      (str (when positivo? "+") (u/formatar-valor-br acum))]
      [:p {:class "text-[11px] text-ink-3 font-semibold mt-1.5"}
-      (if positivo? "cobre dos outros" "deve aos outros")]]))
+      "saldo acumulado (com histórico)"]
+     ;; detalhe do mes selecionado
+     [:div {:class "mt-3 pt-3 border-t border-rule-soft space-y-1"}
+      [:div {:class "flex justify-between text-[11.5px]"}
+       [:span {:class "text-ink-3 font-semibold"} "entrou no mês"]
+       [:span {:class "num font-bold text-ok"} (u/formatar-valor-br aporte)]]
+      [:div {:class "flex justify-between text-[11.5px]"}
+       [:span {:class "text-ink-3 font-semibold"} "custo no mês"]
+       [:span {:class "num font-bold text-ink-2"} (u/formatar-valor-br cota)]]
+      [:div {:class "flex justify-between text-[11.5px]"}
+       [:span {:class "text-ink-3 font-semibold"} "saldo do mês"]
+       [:span {:class (str "num font-bold " (if (>= saldo-mes 0) "text-ok" "text-bad"))}
+        (str (when (>= saldo-mes 0) "+") (u/formatar-valor-br saldo-mes))]]]]))
 
 (defn painel-posicao []
-  [:section {:class "px-9 pb-6"}
-   [:div {:class "flex items-baseline justify-between mb-3"}
-    [:div
-     [:h2 {:class "display text-[22px]"} "Quem está em paz, quem está em débito"]
-     [:p {:class "text-[11px] text-ink-3 font-semibold mt-0.5"}
-      "Posição acumulada do ano"]]]
-   [:div {:class "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"}
-    (for [pid pessoas-ids]
-      ^{:key pid}
-      [card-posicao pid])]])
+  (let [mes   @(rf/subscribe [:mes-atual])
+        dados @(rf/subscribe [:resumo-mes-atual])]
+    [:section {:class "px-9 pb-6"}
+     [:div {:class "flex items-baseline justify-between mb-3"}
+      [:div
+       [:h2 {:class "display text-[22px]"} "Quem está em paz, quem está em débito"]
+       [:p {:class "text-[11px] text-ink-3 font-semibold mt-0.5"}
+        (str "Acumulado até " (u/mes-nome (:mes mes)) "/" (- (:ano mes) 2000) " · carrega o histórico")]]]
+     [:div {:class "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"}
+      (for [pid pessoas-ids]
+        ^{:key pid}
+        [card-posicao pid (get dados pid)])]]))
 
 ;; =========================================================================
 ;; Cells editáveis

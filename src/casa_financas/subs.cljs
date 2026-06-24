@@ -218,6 +218,21 @@
        [[] {"andre" 0 "bianca" 0 "fernanda" 0 "bruna" 0}]
        meses)))))
 
+;; Dados por pessoa do MES selecionado (com acumulado ja carregando historico):
+;; {pid {:aporte :cota :saldo :acumulado}}. Quando o mes muda, evolui.
+(rf/reg-sub
+ :resumo-mes-atual
+ :<- [:resumo-mensal-pessoas]
+ :<- [:mes-atual]
+ (fn [[resumo mes] _]
+   (or (some #(when (and (= (:ano %) (:ano mes)) (= (:mes %) (:mes mes)))
+                (:pessoas %))
+             resumo)
+       {"andre"    {:aporte 0 :cota 0 :saldo 0 :acumulado 0}
+        "bianca"   {:aporte 0 :cota 0 :saldo 0 :acumulado 0}
+        "fernanda" {:aporte 0 :cota 0 :saldo 0 :acumulado 0}
+        "bruna"    {:aporte 0 :cota 0 :saldo 0 :acumulado 0}})))
+
 (rf/reg-sub
  :posicao-pessoa-ano
  :<- [:despesas-historico]
