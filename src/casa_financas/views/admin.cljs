@@ -37,12 +37,14 @@
 (defn hero []
   (let [mes-atual    @(rf/subscribe [:mes-atual])
         despesas-mes @(rf/subscribe [:despesas-do-mes])
-        total-prev   @(rf/subscribe [:total-previsto-mes])
-        total-pago   @(rf/subscribe [:total-pago-mes])
+        ;; hero = contas diretas (debito/pix); o cartao tem card proprio
+        diretas      (remove #(= (:forma_pagamento %) "credito") despesas-mes)
+        total-prev   (reduce + 0 (map :valor diretas))
+        total-pago   (reduce + 0 (map :valor (filter :pago diretas)))
         pct          (if (> total-prev 0) (min 100 (* 100 (/ total-pago total-prev))) 0)
-        n-pagas      (count (filter :pago despesas-mes))
-        n-vencidas   (count (filter #(= (u/despesa-status %) :vencida) despesas-mes))
-        n-pendentes  (count (filter #(= (u/despesa-status %) :pendente) despesas-mes))
+        n-pagas      (count (filter :pago diretas))
+        n-vencidas   (count (filter #(= (u/despesa-status %) :vencida) diretas))
+        n-pendentes  (count (filter #(= (u/despesa-status %) :pendente) diretas))
         saldo-conta  @(rf/subscribe [:saldo-conta])]
     [:section {:class "px-9 pb-6"}
      [:div {:class "grid grid-cols-12 gap-4"}
@@ -105,11 +107,11 @@
         [:div {:class "flex items-center gap-2 mb-2"}
          [:span {:class "w-2.5 h-2.5 rounded-full" :style {:background "#E97A3F"}}]
          [:span {:class "text-[10.5px] font-bold uppercase tracking-[0.5px]" :style {:color "#7A4F1F"}}
-          "Cartão deste mês"]]
+          "Compras no cartão"]]
         [:div {:class "display num text-4xl" :style {:color "#7A4F1F"}}
          (u/formatar-valor-br @(rf/subscribe [:total-credito-mes]))]
         [:p {:class "text-[11px] font-semibold mt-1" :style {:color "#9A6B3A"}}
-         "compras e parcelas na fatura do mês"]]]]]))
+         "gasto no cartão neste mês (não é conta a pagar)"]]]]]))
 
 ;; =========================================================================
 ;; Posição acumulada
