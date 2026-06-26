@@ -479,9 +479,19 @@
 
 (rf/reg-event-fx
  :salvar-saldo-conta
+ ;; re-ancora: grava a base tal que o saldo calculado = valor informado (do banco)
  (fn [{:keys [db]} [_ valor]]
-   {:db (assoc-in db [:configuracoes "saldo_conta"] (str valor))
-    :supabase/salvar-configuracao {:chave "saldo_conta" :valor (str valor)}}))
+   (let [nv    (fn [x] (let [v (js/parseFloat x)] (if (js/isNaN v) 0 v)))
+         ents  (:entradas-historico db)
+         desp  (:despesas-historico db)
+         fats  (:faturas-historico db)
+         fluxo (- (reduce + 0 (map #(nv (:valor %)) ents))
+                  (reduce + 0 (map #(nv (:valor %))
+                                   (filter #(and (:pago %) (not= (:forma_pagamento %) "credito")) desp)))
+                  (reduce + 0 (map #(nv (:valor_pago %)) fats)))
+         base  (- (nv valor) fluxo)]
+     {:db (assoc-in db [:configuracoes "saldo_base"] (str base))
+      :supabase/salvar-configuracao {:chave "saldo_base" :valor (str base)}})))
 
 (rf/reg-fx
  :supabase/salvar-configuracao

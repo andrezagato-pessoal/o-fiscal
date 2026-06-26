@@ -35,17 +35,20 @@
 ;; =========================================================================
 
 (defn hero []
-  (let [mes-atual    @(rf/subscribe [:mes-atual])
-        despesas-mes @(rf/subscribe [:despesas-do-mes])
-        ;; hero = contas diretas (debito/pix); o cartao tem card proprio
-        diretas      (remove #(= (:forma_pagamento %) "credito") despesas-mes)
-        total-prev   (reduce + 0 (map :valor diretas))
-        total-pago   (reduce + 0 (map :valor (filter :pago diretas)))
-        pct          (if (> total-prev 0) (min 100 (* 100 (/ total-pago total-prev))) 0)
-        n-pagas      (count (filter :pago diretas))
-        n-vencidas   (count (filter #(= (u/despesa-status %) :vencida) diretas))
-        n-pendentes  (count (filter #(= (u/despesa-status %) :pendente) diretas))
-        saldo-conta  @(rf/subscribe [:saldo-conta])]
+  (let [mes-atual     @(rf/subscribe [:mes-atual])
+        despesas-mes  @(rf/subscribe [:despesas-do-mes])
+        diretas       (remove #(= (:forma_pagamento %) "credito") despesas-mes)
+        fatura-total  @(rf/subscribe [:total-credito-mes])
+        fatura-pago   @(rf/subscribe [:fatura-pago-mes])
+        fatura-status @(rf/subscribe [:fatura-status-mes])
+        ;; Previsto = contas diretas + fatura do cartao (forecast do mes)
+        total-prev    @(rf/subscribe [:total-previsto-mes])
+        total-pago    (+ (reduce + 0 (map :valor (filter :pago diretas))) fatura-pago)
+        pct           (if (> total-prev 0) (min 100 (* 100 (/ total-pago total-prev))) 0)
+        n-pagas       (count (filter :pago diretas))
+        n-vencidas    (count (filter #(= (u/despesa-status %) :vencida) diretas))
+        n-pendentes   (count (filter #(= (u/despesa-status %) :pendente) diretas))
+        saldo-calc    @(rf/subscribe [:saldo-conta-calculado])]
     [:section {:class "px-9 pb-6"}
      [:div {:class "grid grid-cols-12 gap-4"}
       ;; Hero principal (col-span-7)
@@ -83,7 +86,11 @@
         (when (> n-pagas 0)
           [:span {:class "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill text-[11.5px] font-bold text-ok"
                   :style {:background "#EBF5EF"}}
-           "● " n-pagas " paga" (when (> n-pagas 1) "s")])]]
+           "● " n-pagas " paga" (when (> n-pagas 1) "s")])
+        (when (> fatura-total 0)
+          [:span {:class "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill text-[11.5px] font-bold"
+                  :style {:background "#FFF1E5" :color "#7A4F1F"}}
+           "💳 fatura " (case fatura-status :paga "paga" :parcial "parcial" "em aberto")])]]
       ;; Cards à direita (col-span-5)
       [:div {:class "col-span-12 lg:col-span-5 grid grid-cols-1 gap-4"}
        ;; Saldo conta conjunta
@@ -93,25 +100,34 @@
          [c/label "Saldo conta conjunta"]]
         [:div {:class (str "display num text-4xl "
                            (cond
-                             (nil? saldo-conta)     "text-ink-3"
-                             (>= saldo-conta 0)     "text-ok"
-                             :else                  "text-bad"))}
-         [cell-number (or saldo-conta 0)
+                             (nil? saldo-calc) "text-ink-3"
+                             (>= saldo-calc 0) "text-ok"
+                             :else             "text-bad"))}
+         [cell-number (or saldo-calc 0)
           #(rf/dispatch [:salvar-saldo-conta %])
           {:formatter u/formatar-valor-br :class "text-4xl"}]]
         [:p {:class "text-[11px] text-ink-3 font-semibold mt-1"}
-         "atualizado manualmente · clique para editar"]]
-       ;; Cartão deste mês (warm)
+         "calculado · clique p/ acertar com o saldo do banco"]]
+       ;; Fatura do cartão (consolidada)
        [:div {:class "rounded-panel p-5"
               :style {:background "#FFF1E5" :border "1.5px solid #F5DDC2"}}
         [:div {:class "flex items-center gap-2 mb-2"}
          [:span {:class "w-2.5 h-2.5 rounded-full" :style {:background "#E97A3F"}}]
          [:span {:class "text-[10.5px] font-bold uppercase tracking-[0.5px]" :style {:color "#7A4F1F"}}
-          "Compras no cartão"]]
+          "Fatura do cartão"]
+         [:span {:class "ml-auto text-[10px] font-bold uppercase tracking-[0.5px] px-2 py-0.5 rounded-pill"
+                 :style {:background "#FFFFFF"
+                         :color (case fatura-status :paga "#2E8254" :parcial "#D08A2A" "#B23B3B")}}
+          (case fatura-status :paga "paga" :parcial "parcial" "em aberto")]]
         [:div {:class "display num text-4xl" :style {:color "#7A4F1F"}}
-         (u/formatar-valor-br @(rf/subscribe [:total-credito-mes]))]
-        [:p {:class "text-[11px] font-semibold mt-1" :style {:color "#9A6B3A"}}
-         "gasto no cartão neste mês (não é conta a pagar)"]]]]]))
+         (u/formatar-valor-br fatura-total)]
+        [:div {:class "flex items-center gap-1.5 text-[11px] font-semibold mt-1" :style {:color "#9A6B3A"}}
+         [:span "pago:"]
+         [:span {:class "underline decoration-dotted cursor-pointer"}
+          [cell-number fatura-pago
+           #(rf/dispatch [:salvar-pagamento-fatura %])
+           {:formatter u/formatar-valor-br}]]
+         [:span (str "· clique p/ registrar pagamento")]]]]]]))
 
 ;; =========================================================================
 ;; Posição acumulada

@@ -344,3 +344,37 @@
  (fn [configs _]
    (when-let [v (get configs "saldo_conta")]
      (js/parseFloat v))))
+
+(defn- n-val [x] (let [v (js/parseFloat x)] (if (js/isNaN v) 0 v)))
+
+;; Saldo da conta CALCULADO (bussola): ancora + entradas - contas diretas pagas
+;; - pagamentos de fatura. Bate com o banco quando os lancamentos estao completos.
+(rf/reg-sub
+ :saldo-conta-calculado
+ :<- [:configuracoes]
+ :<- [:entradas-historico]
+ :<- [:despesas-historico]
+ :<- [:faturas-historico]
+ (fn [[cfg entradas despesas faturas] _]
+   (let [base (n-val (get cfg "saldo_base"))
+         ent  (reduce + 0 (map #(n-val (:valor %)) entradas))
+         dir  (reduce + 0 (map #(n-val (:valor %))
+                               (filter #(and (:pago %) (not= (:forma_pagamento %) "credito")) despesas)))
+         fat  (reduce + 0 (map #(n-val (:valor_pago %)) faturas))]
+     (+ base (- ent dir fat)))))
+
+(rf/reg-sub
+ :fatura-pago-mes
+ :<- [:fatura]
+ (fn [fatura _] (or (:valor_pago fatura) 0)))
+
+(rf/reg-sub
+ :fatura-status-mes
+ :<- [:total-credito-mes]
+ :<- [:fatura]
+ (fn [[total fatura] _]
+   (let [pago (or (:valor_pago fatura) 0)]
+     (cond
+       (and (> total 0) (>= pago total)) :paga
+       (> pago 0)                        :parcial
+       :else                             :pendente))))
