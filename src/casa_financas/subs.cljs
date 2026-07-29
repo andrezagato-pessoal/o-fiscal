@@ -363,6 +363,12 @@
          fat  (reduce + 0 (map #(n-val (:valor_pago %)) faturas))]
      (+ base (- ent dir fat)))))
 
+;; Histórico de conferências mensais do saldo (bússola) contra o extrato real do banco
+(rf/reg-sub
+ :saldo-checkpoints
+ (fn [db _]
+   (sort-by (juxt :ano :mes) > (:saldo-checkpoints db))))
+
 (rf/reg-sub
  :fatura-pago-mes
  :<- [:fatura]

@@ -264,3 +264,32 @@
       (.eq "forma_pagamento" "credito")
       (.then #(callback nil))
       (.catch #(callback {:error %}))))
+
+;; -- Checkpoints de saldo (conferência mensal com o banco) --
+(defn buscar-checkpoints! [callback]
+  (-> (.from client "saldo_checkpoints")
+      (.select "*")
+      (.order "ano")
+      (.order "mes")
+      (.then (fn [res]
+               (let [data (js->clj (.-data res) :keywordize-keys true)]
+                 (callback (mapv (fn [c]
+                                   (-> c
+                                       (update :saldo_real #(js/parseFloat %))
+                                       (update :saldo_calculado #(when % (js/parseFloat %)))
+                                       (update :diferenca #(when % (js/parseFloat %)))))
+                                 data)))))
+      (.catch #(js/console.error "Erro ao buscar checkpoints" %))))
+
+(defn salvar-checkpoint! [checkpoint callback]
+  (let [row #js {:ano             (:ano checkpoint)
+                 :mes             (:mes checkpoint)
+                 :dia             (:dia checkpoint)
+                 :saldo_real      (:saldo_real checkpoint)
+                 :saldo_calculado (:saldo_calculado checkpoint)
+                 :fonte           (:fonte checkpoint)
+                 :observacao      (:observacao checkpoint)}]
+    (-> (.from client "saldo_checkpoints")
+        (.upsert row #js {:onConflict "ano,mes"})
+        (.then #(callback nil))
+        (.catch #(callback {:error %})))))

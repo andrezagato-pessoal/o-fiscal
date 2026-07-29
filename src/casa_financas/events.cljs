@@ -52,6 +52,7 @@
       :supabase/buscar-historico nil
       :supabase/buscar-configuracoes nil
       :supabase/buscar-categorias nil
+      :supabase/buscar-checkpoints nil
       :supabase/buscar-fatura {:ano (:ano mes) :mes (:mes mes)}})))
 
 ;; -- Navegação --
@@ -469,6 +470,27 @@
    (u/reset-cores! configs)
    (assoc db :configuracoes configs)))
 
+(rf/reg-fx
+ :supabase/buscar-checkpoints
+ (fn [_]
+   (supa/buscar-checkpoints!
+    (fn [checkpoints]
+      (rf/dispatch [:set-checkpoints checkpoints])))))
+
+(rf/reg-event-db
+ :set-checkpoints
+ (fn [db [_ checkpoints]]
+   (assoc db :saldo-checkpoints checkpoints)))
+
+(rf/reg-fx
+ :supabase/salvar-checkpoint
+ (fn [checkpoint]
+   (supa/salvar-checkpoint! checkpoint
+                            (fn []
+                              (supa/buscar-checkpoints!
+                               (fn [checkpoints]
+                                 (rf/dispatch [:set-checkpoints checkpoints])))))))
+
 (rf/reg-event-fx
  :salvar-cor-pessoa
  (fn [{:keys [db]} [_ pessoa-id cor]]
@@ -480,18 +502,26 @@
 (rf/reg-event-fx
  :salvar-saldo-conta
  ;; re-ancora: grava a base tal que o saldo calculado = valor informado (do banco)
+ ;; e registra um checkpoint mensal com o desvio encontrado, para auditoria futura
  (fn [{:keys [db]} [_ valor]]
-   (let [nv    (fn [x] (let [v (js/parseFloat x)] (if (js/isNaN v) 0 v)))
-         ents  (:entradas-historico db)
-         desp  (:despesas-historico db)
-         fats  (:faturas-historico db)
-         fluxo (- (reduce + 0 (map #(nv (:valor %)) ents))
-                  (reduce + 0 (map #(nv (:valor %))
-                                   (filter #(and (:pago %) (not= (:forma_pagamento %) "credito")) desp)))
-                  (reduce + 0 (map #(nv (:valor_pago %)) fats)))
-         base  (- (nv valor) fluxo)]
-     {:db (assoc-in db [:configuracoes "saldo_base"] (str base))
-      :supabase/salvar-configuracao {:chave "saldo_base" :valor (str base)}})))
+   (let [nv              (fn [x] (let [v (js/parseFloat x)] (if (js/isNaN v) 0 v)))
+         ents             (:entradas-historico db)
+         desp             (:despesas-historico db)
+         fats             (:faturas-historico db)
+         fluxo            (- (reduce + 0 (map #(nv (:valor %)) ents))
+                             (reduce + 0 (map #(nv (:valor %))
+                                              (filter #(and (:pago %) (not= (:forma_pagamento %) "credito")) desp)))
+                             (reduce + 0 (map #(nv (:valor_pago %)) fats)))
+         base-antiga      (nv (get-in db [:configuracoes "saldo_base"]))
+         calculado-antes  (+ base-antiga fluxo)
+         base-nova        (- (nv valor) fluxo)
+         {:keys [ano mes]} (:mes-atual db)]
+     {:db (assoc-in db [:configuracoes "saldo_base"] (str base-nova))
+      :supabase/salvar-configuracao {:chave "saldo_base" :valor (str base-nova)}
+      :supabase/salvar-checkpoint   {:ano ano :mes mes :dia (.getDate (js/Date.))
+                                     :saldo_real      (nv valor)
+                                     :saldo_calculado calculado-antes
+                                     :fonte           "app"}})))
 
 (rf/reg-fx
  :supabase/salvar-configuracao

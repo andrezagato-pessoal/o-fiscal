@@ -646,6 +646,44 @@
            [:p {:class "text-[11px] text-ink-3 font-semibold mt-1"}
             (str (if (>= last-v 0) "credor" "devedor") " · acumulado até o mês")]]]]))))
 
+(defn painel-checkpoints []
+  (let [checkpoints @(rf/subscribe [:saldo-checkpoints])]
+    (when (seq checkpoints)
+      [:section {:class "px-9 pb-6"}
+       [:div {:class "mb-3"}
+        [:h2 {:class "display text-[22px]"} "Conferências mensais (bússola)"]
+        [:p {:class "text-[11px] text-ink-3 font-semibold mt-0.5"}
+         "Saldo real (extrato do banco) vs. calculado pelo app no momento da conferência"]]
+       [:div {:class "bg-panel rounded-panel border border-rule p-5 shadow-soft overflow-x-auto"}
+        [:table {:class "w-full"}
+         [:thead
+          [:tr {:class "border-b border-rule"}
+           [:th {:class "px-2 py-1.5 text-left text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Mês"]
+           [:th {:class "px-2 py-1.5 text-right text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Saldo real"]
+           [:th {:class "px-2 py-1.5 text-right text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Calculado"]
+           [:th {:class "px-2 py-1.5 text-right text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Diferença"]
+           [:th {:class "px-2 py-1.5 text-left text-[10.5px] font-bold text-ink-2 uppercase tracking-[0.4px]"} "Fonte"]]]
+         [:tbody
+          (for [{:keys [ano mes saldo_real saldo_calculado diferenca fonte observacao]} checkpoints]
+            ^{:key (str ano "-" mes)}
+            [:tr {:class "border-t border-rule-soft"}
+             [:td {:class "px-2 py-1.5 text-[12px] font-semibold text-ink"}
+              (str (u/mes-nome mes) "/" (- ano 2000))]
+             [:td {:class "px-2 py-1.5 text-right num text-[12px] text-ink"}
+              (u/formatar-valor-br saldo_real)]
+             [:td {:class "px-2 py-1.5 text-right num text-[12px] text-ink-2"}
+              (if saldo_calculado (u/formatar-valor-br saldo_calculado) "—")]
+             [:td {:class (str "px-2 py-1.5 text-right num text-[12px] font-bold "
+                               (cond
+                                 (nil? diferenca)         "text-ink-3"
+                                 (< (js/Math.abs diferenca) 5) "text-ok"
+                                 :else                     "text-bad"))}
+              (if diferenca
+                (str (when (>= diferenca 0) "+") (u/formatar-valor-br diferenca))
+                "—")]
+             [:td {:class "px-2 py-1.5 text-left text-[11px] text-ink-3"}
+              (str fonte (when observacao (str " · " observacao)))]])]]]])))
+
 ;; =========================================================================
 ;; View principal
 ;; =========================================================================
@@ -654,6 +692,7 @@
   [:div {:class "min-h-screen bg-cream font-sans text-ink"}
    [header]
    [hero]
+   [painel-checkpoints]
    [painel-posicao]
    [painel-saldos]
    [tabela-despesas]
